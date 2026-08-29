@@ -1,0 +1,15 @@
+BREEZE OS v0.9.0-beta.2 — PRISMA FOUNDATION
+
+1. Fă backup folderului actual.
+2. Copiază conținutul acestei versiuni peste proiect.
+3. Rulează în terminal:
+   npm install
+   npm run db:validate
+   npm run db:generate
+   npm run build
+   npm run dev
+
+IMPORTANT:
+- Nu șterge folderul storage.
+- Aplicația folosește în continuare JSON în această etapă.
+- PostgreSQL se configurează doar după ce ai un server/bază locală și ai adăugat DATABASE_URL în .env.local.

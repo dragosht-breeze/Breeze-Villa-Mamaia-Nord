@@ -1,0 +1,19 @@
+BREEZE OS v0.9.4 — MOBILE POLISH
+
+1. Oprește serverul cu Ctrl+C.
+2. Fă backup folderului actual.
+3. Înlocuiește proiectul cu această versiune.
+4. Rulează:
+   npm install
+   npm run build
+   npm run dev
+5. Testează pe telefon folosind adresa Network afișată de Next.js, de exemplu:
+   http://192.168.0.103:3000
+   Telefonul și calculatorul trebuie să fie în aceeași rețea Wi-Fi.
+
+Verificări principale pe telefon:
+- meniul lateral se deschide și se închide;
+- bara de navigare de jos: Acasă, Calendar, Taskuri, Alerte;
+- Calendar, Încasări și Tarife nu ies în afara ecranului;
+- formularele nu fac zoom automat pe iPhone;
+- conținutul nu este acoperit de bara de jos.

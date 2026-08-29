@@ -1,0 +1,283 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ReservationStatus {
+  NEW_REQUEST
+  WAITING_PAYMENT
+  CONFIRMED
+  CHECKED_IN
+  CHECKED_OUT
+  COMPLETED
+  EXPIRED
+  CANCEL_REQUESTED
+  CANCELLED
+}
+
+enum ReservationSource {
+  DIRECT
+  BOOKING
+  MANUAL
+}
+
+enum PaymentStatus {
+  PENDING
+  LINK_PENDING
+  REDIRECT_REQUIRED
+  PROCESSING
+  PAID
+  FAILED
+  REFUND_PENDING
+  REFUNDED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CARD_ONLINE
+  VACATION_CARD_LINK
+  BANK_TRANSFER
+  POS
+  CASH
+  MANUAL
+}
+
+enum PaymentScope {
+  DEPOSIT
+  PARTIAL
+  FULL
+  REFUND
+  SERVICE
+  ADJUSTMENT
+}
+
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  RECEPTION
+  HOUSEKEEPING
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         UserRole @default(RECEPTION)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Apartment {
+  id            String   @id @default(cuid())
+  legacyId      String?  @unique @map("legacy_id")
+  slug          String   @unique
+  title         String
+  shortTitle    String?  @map("short_title")
+  category      String?
+  maxGuests     Int      @default(2) @map("max_guests")
+  bedrooms      Int      @default(1)
+  surfaceSqm    Int?     @map("surface_sqm")
+  floor         String?
+  view          String?
+  active        Boolean  @default(true)
+  metadata      Json?
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  reservations  ReservationApartment[]
+  rateRules     RateRule[]
+
+  @@map("apartments")
+}
+
+model Customer {
+  id                String   @id @default(cuid())
+  legacyId          String?  @unique @map("legacy_id")
+  name              String
+  phone             String?
+  normalizedPhone   String?  @unique @map("normalized_phone")
+  email             String?
+  normalizedEmail   String?  @unique @map("normalized_email")
+  aliases           Json?
+  notes             String?
+  tags              Json?
+  metadata          Json?
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  reservations      Reservation[]
+
+  @@index([name])
+  @@map("customers")
+}
+
+model Reservation {
+  id                    String            @id @default(cuid())
+  code                  String            @unique
+  legacyRequestId       String?           @unique @map("legacy_request_id")
+  groupCode             String?           @map("group_code")
+  customerId            String?           @map("customer_id")
+  status                ReservationStatus @default(NEW_REQUEST)
+  source                ReservationSource @default(DIRECT)
+  checkIn               DateTime          @map("check_in") @db.Date
+  checkOut              DateTime          @map("check_out") @db.Date
+  nights                Int
+  adults                Int               @default(1)
+  children              Int               @default(0)
+  childAges             Json?             @map("child_ages")
+  totalAmount           Decimal           @default(0) @map("total_amount") @db.Decimal(12, 2)
+  currency              String            @default("RON")
+  requiredDeposit       Decimal           @default(0) @map("required_deposit") @db.Decimal(12, 2)
+  paidAmount            Decimal           @default(0) @map("paid_amount") @db.Decimal(12, 2)
+  refundedAmount        Decimal           @default(0) @map("refunded_amount") @db.Decimal(12, 2)
+  selectedPaymentMode   String?           @map("selected_payment_mode")
+  guestMessage          String?           @map("guest_message")
+  internalNotes         Json?             @map("internal_notes")
+  metadata              Json?
+  expiresAt             DateTime?         @map("expires_at")
+  confirmedAt           DateTime?         @map("confirmed_at")
+  cancelledAt           DateTime?         @map("cancelled_at")
+  createdAt             DateTime          @default(now()) @map("created_at")
+  updatedAt             DateTime          @updatedAt @map("updated_at")
+
+  customer              Customer?         @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  apartments            ReservationApartment[]
+  payments              Payment[]
+
+  @@index([checkIn, checkOut])
+  @@index([status])
+  @@index([customerId])
+  @@index([groupCode])
+  @@map("reservations")
+}
+
+model ReservationApartment {
+  id              String      @id @default(cuid())
+  reservationId   String      @map("reservation_id")
+  apartmentId     String      @map("apartment_id")
+  allocatedAmount Decimal?    @map("allocated_amount") @db.Decimal(12, 2)
+  createdAt       DateTime    @default(now()) @map("created_at")
+
+  reservation     Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  apartment       Apartment   @relation(fields: [apartmentId], references: [id], onDelete: Restrict)
+
+  @@unique([reservationId, apartmentId])
+  @@index([apartmentId])
+  @@map("reservation_apartments")
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  legacyId          String?       @unique @map("legacy_id")
+  reservationId     String        @map("reservation_id")
+  kind              String        @default("payment")
+  method            PaymentMethod
+  scope             PaymentScope
+  amount            Decimal       @db.Decimal(12, 2)
+  currency          String        @default("RON")
+  status            PaymentStatus @default(PENDING)
+  providerReference String?       @map("provider_reference")
+  description       String?
+  metadata          Json?
+  paidAt            DateTime?     @map("paid_at")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  reservation       Reservation   @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+
+  @@index([reservationId, status])
+  @@index([createdAt])
+  @@map("payments")
+}
+
+model RateRule {
+  id              String     @id @default(cuid())
+  apartmentId     String     @map("apartment_id")
+  date            DateTime   @db.Date
+  price           Decimal?   @db.Decimal(12, 2)
+  minNights       Int?       @map("min_nights")
+  blocked         Boolean    @default(false)
+  offerLabel      String?    @map("offer_label")
+  metadata        Json?
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+
+  apartment       Apartment  @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+
+  @@unique([apartmentId, date])
+  @@index([date])
+  @@map("rate_rules")
+}
+enum TaskStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskPriority {
+  CRITICAL
+  HIGH
+  NORMAL
+  LOW
+}
+
+enum TaskCategory {
+  CHECK_IN
+  CHECK_OUT
+  CLEANING
+  PAYMENT
+  MAINTENANCE
+  MANUAL
+}
+
+model Task {
+  id              String       @id @default(cuid())
+  source          String       @default("manual")
+  sourceKey       String?      @unique @map("source_key")
+  reservationCode String?      @map("reservation_code")
+  category        TaskCategory @default(MANUAL)
+  title           String
+  description     String?
+  apartmentTitles Json?        @map("apartment_titles")
+  guestName       String?      @map("guest_name")
+  dueAt           DateTime     @map("due_at")
+  priority        TaskPriority @default(NORMAL)
+  status          TaskStatus   @default(OPEN)
+  assigneeRole    String       @default("unassigned") @map("assignee_role")
+  assigneeName    String?      @map("assignee_name")
+  completedAt     DateTime?    @map("completed_at")
+  metadata        Json?
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  @@index([dueAt, status])
+  @@index([category])
+  @@index([assigneeRole])
+  @@index([reservationCode])
+  @@map("tasks")
+}
+
+model AnalyticsEvent {
+  id             String   @id
+  type           String
+  conversationId String   @map("conversation_id")
+  channel        String
+  metadata       Json?
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@index([type, createdAt])
+  @@index([conversationId])
+  @@index([channel, createdAt])
+  @@map("analytics_events")
+}

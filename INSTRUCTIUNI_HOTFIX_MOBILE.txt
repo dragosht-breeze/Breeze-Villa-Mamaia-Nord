@@ -1,0 +1,19 @@
+BREEZE OS v0.9.4 HOTFIX 1 — TELEFON / MENIU NEINTERACTIV
+
+Problema rezolvată:
+Pagina se încărca vizual prin adresa IP locală, dar JavaScript-ul de client putea fi blocat în modul development. Din acest motiv, meniul mobil nu răspundea, iar textele animate din Hero rămâneau invizibile.
+
+Pași de instalare:
+1. Oprește serverul din terminal cu CTRL+C.
+2. Înlocuiește proiectul cu această arhivă.
+3. Șterge folderul .next, dacă există.
+4. Rulează:
+   npm install
+   npm run build
+   npm run dev
+5. Reîncarcă pagina pe telefon. Dacă Safari păstrează pagina veche, închide fila și deschide din nou adresa Network afișată în terminal.
+
+Exemplu:
+http://192.168.0.103:3000
+
+Telefonul și calculatorul trebuie să fie conectate la aceeași rețea Wi-Fi.

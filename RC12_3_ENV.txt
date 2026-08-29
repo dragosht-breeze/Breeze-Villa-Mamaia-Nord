@@ -1,0 +1,25 @@
+RC12.3 — variabile de adăugat MANUAL în .env.local
+
+# Păstrează FALSE până când template-urile WhatsApp sunt aprobate în Meta.
+GUEST_AUTOMATION_DELIVERY_ENABLED=false
+
+# Limba exactă cu care sunt aprobate template-urile în Meta.
+WHATSAPP_TEMPLATE_LANGUAGE=ro
+
+# Numele template-urilor aprobate în WhatsApp Manager / Meta.
+WHATSAPP_TEMPLATE_PRE_STAY=
+WHATSAPP_TEMPLATE_CHECK_IN_DAY=
+WHATSAPP_TEMPLATE_IN_STAY=
+WHATSAPP_TEMPLATE_PRE_CHECKOUT=
+WHATSAPP_TEMPLATE_POST_STAY=
+
+PARAMETRI BODY AȘTEPTAȚI, ÎN ORDINE
+PRE_STAY:       {{1}} prenume, {{2}} check-in YYYY-MM-DD, {{3}} apartament(e)
+CHECK_IN_DAY:   {{1}} prenume, {{2}} apartament(e)
+IN_STAY:        {{1}} prenume
+PRE_CHECKOUT:   {{1}} prenume, {{2}} check-out YYYY-MM-DD
+POST_STAY:      {{1}} prenume
+
+IMPORTANT
+- Nu activa GUEST_AUTOMATION_DELIVERY_ENABLED=true până când toate template-urile pe care vrei să le folosești sunt aprobate în Meta.
+- Mesajele proactive în afara ferestrei de customer service WhatsApp trebuie trimise ca template-uri aprobate, nu ca text liber.

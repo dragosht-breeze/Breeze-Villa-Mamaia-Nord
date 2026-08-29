@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="gold" x1="18" y1="12" x2="104" y2="104" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFF1B7"/>
+      <stop offset="0.32" stop-color="#D9B56D"/>
+      <stop offset="0.66" stop-color="#A87424"/>
+      <stop offset="1" stop-color="#EAD083"/>
+    </linearGradient>
+    <linearGradient id="navy" x1="26" y1="20" x2="95" y2="98" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F3555"/>
+      <stop offset="1" stop-color="#071B2D"/>
+    </linearGradient>
+  </defs>
+  <rect x="12" y="12" width="96" height="96" rx="28" fill="#FFFDF7"/>
+  <rect x="15" y="15" width="90" height="90" rx="25" fill="none" stroke="url(#gold)" stroke-width="3"/>
+  <path d="M78 28C91 33 98 45 95 59C89 49 81 43 69 42C80 49 84 58 80 70C74 58 65 52 52 52C63 44 70 36 78 28Z" fill="url(#gold)"/>
+  <path d="M35 80C48 70 62 71 76 80C86 86 96 83 104 76" fill="none" stroke="#158F91" stroke-width="5" stroke-linecap="round"/>
+  <path d="M20 91C39 81 57 82 76 92C91 99 104 96 112 88" fill="none" stroke="url(#gold)" stroke-width="3.5" stroke-linecap="round"/>
+  <text x="27" y="67" font-size="40" font-weight="900" font-family="Georgia, serif" fill="url(#gold)">B</text>
+  <text x="56" y="67" font-size="40" font-weight="900" font-family="Georgia, serif" fill="url(#navy)">V</text>
+</svg>

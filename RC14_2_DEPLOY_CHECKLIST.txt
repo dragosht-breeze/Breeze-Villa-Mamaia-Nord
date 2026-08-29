@@ -1,0 +1,42 @@
+RC14.2 — DEPLOY PREPARATION
+
+SCOP
+Pregătește proiectul pentru producție fără să alegem încă un furnizor de hosting și fără să activăm NETOPIA/WhatsApp real.
+
+FIȘIERE DE ÎNLOCUIT
+- src/lib/launch-readiness/service.ts
+- src/app/api/cron/guest-automation/route.ts
+- next.config.ts
+- package.json
+
+FIȘIERE NOI
+- src/app/api/health/route.ts
+- scripts/production-check.mjs
+- .env.production.example
+
+DUPĂ COPIERE, LOCAL
+1. npm run build
+2. npm run dev
+3. verifică http://localhost:3000/api/health
+   Rezultat așteptat: { ok: true, service: "breeze-villa", ... }
+4. verifică /admin/launch-readiness
+
+ÎNAINTE DE DEPLOY
+1. Configurează domeniul HTTPS final în NEXT_PUBLIC_SITE_URL.
+2. Configurează un storage PERSISTENT și setează BREEZE_STORAGE_DIR.
+   IMPORTANT: dacă hostingul este serverless/ephemeral și nu oferă filesystem persistent,
+   NU lansa cu JSON storage; migrează datele operaționale într-o bază persistentă.
+3. Generează GUEST_AUTOMATION_CRON_SECRET (min. 32 caractere).
+4. Schedulerul extern va apela:
+   GET sau POST /api/cron/guest-automation
+   Header: Authorization: Bearer <GUEST_AUTOMATION_CRON_SECRET>
+5. Păstrează GUEST_AUTOMATION_DELIVERY_ENABLED=false până ai numărul WhatsApp dedicat și template-urile Meta aprobate.
+6. NETOPIA poate rămâne neactivat până la sprintul de plăți production.
+
+VERIFICARE PRODUCȚIE
+În mediul care are variabilele de producție încărcate:
+  npm run production:check
+
+Nu afișa și nu trimite altcuiva valorile reale pentru:
+BREEZE_AUTH_SECRET, BREEZE_ADMIN_PASSWORD, OPENAI_API_KEY, RESEND_API_KEY,
+NETOPIA_API_TOKEN, WHATSAPP_ACCESS_TOKEN, GUEST_AUTOMATION_CRON_SECRET.

@@ -1,0 +1,31 @@
+BREEZE OS v0.9.1 — AUTHENTICATION & ROLES
+
+1. Oprește serverul din VS Code cu Ctrl+C.
+2. Fă o copie de siguranță a folderului proiectului actual.
+3. Copiază conținutul acestei arhive peste proiect și acceptă înlocuirea fișierelor.
+4. Păstrează fișierul tău .env.local existent.
+5. Adaugă în .env.local:
+
+BREEZE_AUTH_SECRET="introdu-aici-un-secret-lung-si-unic"
+BREEZE_ADMIN_NAME="Administrator Breeze"
+BREEZE_ADMIN_EMAIL="admin@breezevilla.ro"
+BREEZE_ADMIN_PASSWORD="<setează-o-parolă-unică-de-minimum-12-caractere>"
+
+6. Rulează:
+   npm install
+   npm run dev
+
+7. Intră la:
+   http://localhost:3000/login
+
+Primul cont:
+E-mail: admin@breezevilla.ro
+Parolă: valoarea configurată local în BREEZE_ADMIN_PASSWORD
+
+După primul login poți crea alte conturi din:
+http://localhost:3000/admin/settings
+
+IMPORTANT:
+- Dacă storage/users.json există deja, valorile BREEZE_ADMIN_* nu îl rescriu.
+- Pentru regenerarea contului inițial din .env.local, oprește serverul și șterge doar storage/users.json.
+- Nu publica aplicația online cu parola implicită sau cu secretul exemplu.

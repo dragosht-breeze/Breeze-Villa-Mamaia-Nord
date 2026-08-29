@@ -1,0 +1,25 @@
+RC1.7 – Analytics Dashboard
+
+Copiază toate fișierele păstrând exact structura folderelor.
+
+Fișiere noi:
+- src/app/api/admin/analytics/route.ts
+- src/app/admin/analytics/page.tsx
+- src/components/admin/analytics/AnalyticsDashboard.tsx
+
+Fișier înlocuit:
+- src/components/admin/AdminShell.tsx
+
+După copiere:
+1. Oprește serverul cu Ctrl + C.
+2. Rulează npm run build.
+3. Rulează npm run dev.
+4. Deschide http://localhost:3000/admin/analytics
+
+Analytics folosește:
+- rezervările și tranzacțiile reale din Reservation Center;
+- perioadele ocupate din Booking Sync;
+- cele 7 apartamente definite în proiect.
+
+Observație:
+Booking iCal transmite perioadele ocupate, nu valoarea rezervărilor. Din acest motiv, veniturile Booking apar numai pentru rezervările introduse și în Reservation Center.

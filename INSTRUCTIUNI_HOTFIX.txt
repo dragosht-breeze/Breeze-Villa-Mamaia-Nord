@@ -1,0 +1,39 @@
+BREEZE OS v0.9.2 — HOTFIX NPM REGISTRY
+
+Problema rezolvata:
+package-lock.json continea adrese interne de registry care nu sunt accesibile pe calculatorul tau.
+Acest patch le inlocuieste cu registry-ul public oficial npm.
+
+PASII EXACTI:
+
+1. Opreste serverul din terminalul VS Code:
+   apasa Ctrl + C
+
+2. Inchide toate terminalele VS Code care ruleaza npm/node.
+
+3. Copiaza peste proiect cele doua fisiere din acest patch:
+   - package-lock.json
+   - .npmrc
+   Alege Replace/Replace the files in the destination.
+
+4. In terminalul PowerShell, din folderul proiectului, ruleaza:
+
+   Remove-Item -Recurse -Force node_modules
+
+   Daca spune ca node_modules nu exista, continua.
+   Daca apare EPERM, inchide complet VS Code, redeschide proiectul si ruleaza din nou comanda.
+
+5. Ruleaza:
+
+   npm cache verify
+   npm install
+
+6. Dupa terminarea instalarii, ruleaza:
+
+   npm run dev
+
+7. Verifica:
+
+   http://localhost:3000/admin/tasks
+
+Nu sterge folderul storage. Datele tale raman acolo.

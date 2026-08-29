@@ -1,0 +1,14 @@
+BREEZE OS v0.9.0-beta.1 — INSTALARE
+
+1. Oprește serverul de dezvoltare.
+2. Fă o copie de siguranță a folderului actual și mai ales a folderului storage.
+3. Înlocuiește proiectul cu această versiune sau copiază fișierele modificate.
+4. În terminal, în folderul proiectului, rulează:
+
+   npm install
+   npm run build
+   npm run dev
+
+Nu este necesară migrarea datelor. Fișierele JSON existente sunt păstrate în aceleași formate.
+
+Opțional, poți seta BREEZE_STORAGE_DIR în .env.local pentru a păstra datele într-un folder persistent din afara proiectului.

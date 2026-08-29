@@ -1,0 +1,12 @@
+BREEZE OS v0.9.2 — TASK CENTER
+
+1. Opriți serverul de dezvoltare.
+2. Faceți o copie de siguranță a proiectului curent.
+3. Copiați întregul conținut al acestei arhive peste proiect și confirmați înlocuirea fișierelor.
+4. Deschideți terminalul în folderul proiectului.
+5. Rulați: npm install
+6. Rulați: npm run dev
+7. Deschideți: http://localhost:3000/admin/tasks
+
+Taskurile se generează automat la prima deschidere din rezervările existente.
+Fișierul storage/tasks.json este creat automat și nu trebuie configurat manual.
