@@ -2,13 +2,15 @@ import { NextResponse } from "next/server";
 import { apartments } from "@/data/apartments";
 import { listReservationFolders } from "@/lib/reservation-center/store";
 import { listReservationRequests } from "@/lib/reservationStore";
+import { readBookingSyncStore } from "@/lib/booking-sync/store";
 
 export const runtime = "nodejs";
 
 export async function GET() {
-  const [folders, requests] = await Promise.all([
+  const [folders, requests, bookingSync] = await Promise.all([
     listReservationFolders(),
     listReservationRequests(),
+    readBookingSyncStore(),
   ]);
 
   const folderLegacyIds = new Set(
@@ -83,5 +85,13 @@ export async function GET() {
       guests: apartment.guests,
     })),
     reservations,
+    bookingEvents: bookingSync.events.map((event) => ({
+      id: event.id,
+      apartmentSlug: event.apartmentSlug,
+      start: event.start,
+      end: event.end,
+      summary: event.summary || "Rezervare Booking",
+      provider: event.provider,
+    })),
   });
 }

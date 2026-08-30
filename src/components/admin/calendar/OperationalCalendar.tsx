@@ -32,10 +32,20 @@ type Apartment = {
 
 type Reservation = CalendarReservationSummary;
 
+type BookingEvent = {
+  id: string;
+  apartmentSlug: string;
+  start: string;
+  end: string;
+  summary: string;
+  provider: string;
+};
+
 type ApiData = {
   ok: boolean;
   apartments: Apartment[];
   reservations: Reservation[];
+  bookingEvents: BookingEvent[];
 };
 
 const DAY_WIDTHS = {
@@ -290,6 +300,19 @@ export default function OperationalCalendar() {
     });
   }, [activeFilter, data, onlyBalance, query, today]);
 
+  const filteredBookingEvents = useMemo(() => {
+    if (!data || onlyBalance || activeFilter !== "all") return [];
+
+    const needle = query.trim().toLowerCase();
+    if (!needle) return data.bookingEvents;
+
+    return data.bookingEvents.filter((event) =>
+      [event.summary, event.provider, "booking"].some((value) =>
+        value.toLowerCase().includes(needle)
+      )
+    );
+  }, [activeFilter, data, onlyBalance, query]);
+
   const rangeEnd = dateKey(addDays(calendarStart, days));
   const totalWidth =
     view === "month" ? "100%" : days * Number.parseInt(dayWidth, 10);
@@ -467,6 +490,7 @@ export default function OperationalCalendar() {
             <span className="inline-flex items-center gap-2"><i className="h-3 w-3 rounded-full bg-amber-300" /> Avans plătit</span>
             <span className="inline-flex items-center gap-2"><i className="h-3 w-3 rounded-full bg-orange-300" /> În așteptarea plății</span>
             <span className="inline-flex items-center gap-2"><i className="h-3 w-3 rounded-full bg-red-300" /> Necesită intervenție</span>
+            <span className="inline-flex items-center gap-2"><i className="h-3 w-3 rounded-full bg-violet-400" /> Booking.com</span>
           </div>
         </section>
 
@@ -538,6 +562,11 @@ export default function OperationalCalendar() {
                     (reservation) => reservation.apartmentSlug === apartment.slug &&
                       reservation.checkIn < rangeEnd &&
                       reservation.checkOut > dateKey(calendarStart)
+                  );
+                  const rowBookingEvents = filteredBookingEvents.filter(
+                    (event) => event.apartmentSlug === apartment.slug &&
+                      event.start < rangeEnd &&
+                      event.end > dateKey(calendarStart)
                   );
 
                   return (
@@ -741,6 +770,40 @@ export default function OperationalCalendar() {
                                 </div>
                               </div>
                             </button>
+                          );
+                        })}
+
+                        {rowBookingEvents.map((event) => {
+                          const visibleStart = event.start < dateKey(calendarStart) ? dateKey(calendarStart) : event.start;
+                          const visibleEnd = event.end > rangeEnd ? rangeEnd : event.end;
+                          const startOffset = diffDays(dateKey(calendarStart), visibleStart);
+                          const spanDays = Math.max(1, diffDays(visibleStart, visibleEnd));
+                          const left = view === "month"
+                            ? `calc(${startOffset} * ${dayWidth} + 2px)`
+                            : startOffset * Number.parseInt(dayWidth, 10) + 3;
+                          const width = view === "month"
+                            ? `calc(${spanDays} * ${dayWidth} - 4px)`
+                            : spanDays * Number.parseInt(dayWidth, 10) - 6;
+
+                          return (
+                            <div
+                              key={`booking:${event.id}`}
+                              className="absolute z-30 overflow-hidden rounded-lg border border-violet-400 bg-violet-100 px-2 py-1.5 text-left text-violet-950 shadow-sm"
+                              title={`Booking.com • ${event.summary} • ${event.start} → ${event.end}`}
+                              style={{
+                                left,
+                                width,
+                                top: view === "month" ? 6 : 8,
+                                height: view === "month" ? 36 : 46,
+                              }}
+                            >
+                              <p className="truncate text-xs font-black">Booking.com</p>
+                              {view !== "month" ? (
+                                <p className="mt-0.5 truncate text-[9px] font-bold opacity-75">
+                                  {event.start.slice(5)} → {event.end.slice(5)}
+                                </p>
+                              ) : null}
+                            </div>
                           );
                         })}
                       </div>
