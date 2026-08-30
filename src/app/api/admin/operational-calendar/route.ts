@@ -6,6 +6,16 @@ import { readBookingSyncStore } from "@/lib/booking-sync/store";
 
 export const runtime = "nodejs";
 
+const calendarApartmentOrder = [
+  "studio",
+  "apartament-superior",
+  "apartament-3-etaj-1",
+  "apartament-2",
+  "apartament-3-etaj-2",
+  "apartament-3-premium",
+  "apartament-2-etaj-3",
+];
+
 export async function GET() {
   const [folders, requests, bookingSync] = await Promise.all([
     listReservationFolders(),
@@ -77,13 +87,19 @@ export async function GET() {
 
   return NextResponse.json({
     ok: true,
-    apartments: apartments.map((apartment) => ({
+    apartments: [...apartments]
+      .sort(
+        (left, right) =>
+          calendarApartmentOrder.indexOf(left.slug) -
+          calendarApartmentOrder.indexOf(right.slug)
+      )
+      .map((apartment) => ({
       slug: apartment.slug,
       title: apartment.title,
       shortTitle: apartment.shortTitle,
       floor: apartment.floor,
       guests: apartment.guests,
-    })),
+      })),
     reservations,
     bookingEvents: bookingSync.events.map((event) => ({
       id: event.id,
