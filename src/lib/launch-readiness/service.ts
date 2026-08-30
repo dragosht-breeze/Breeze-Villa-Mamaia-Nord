@@ -25,6 +25,25 @@ function storageDirectory() {
 }
 
 async function checkStorage(): Promise<LaunchCheck[]> {
+  if (env("DATABASE_URL")) {
+    return [
+      check(
+        "storage-writable",
+        "Storage",
+        "Storage inscriptibil",
+        "passed",
+        "Datele aplicației sunt salvate în baza de date PostgreSQL/Neon. Nu este necesar un director local inscriptibil."
+      ),
+      check(
+        "storage-persistent-config",
+        "Storage",
+        "Storage persistent configurat",
+        "passed",
+        "DATABASE_URL este configurat; datele persistă în PostgreSQL/Neon între deploy-uri."
+      ),
+    ];
+  }
+
   const directory = storageDirectory();
   const configured = Boolean(env("BREEZE_STORAGE_DIR"));
   const production = process.env.NODE_ENV === "production";
@@ -111,8 +130,14 @@ function securityChecks(): LaunchCheck[] {
 }
 
 function websiteChecks(): LaunchCheck[] {
-  const siteUrl = env("NEXT_PUBLIC_SITE_URL");
-  const validHttps = /^https:\/\//i.test(siteUrl);
+  const configuredUrl = env("NEXT_PUBLIC_SITE_URL");
+  const vercelUrl = env("VERCEL_PROJECT_PRODUCTION_URL") || env("VERCEL_URL");
+  const siteUrl = /^https:\/\//i.test(configuredUrl)
+    ? configuredUrl
+    : vercelUrl
+      ? `https://${vercelUrl.replace(/^https?:\/\//i, "")}`
+      : configuredUrl;
+  const validHttps = /^https:\/\/[^\s/$.?#].[^\s]*$/i.test(siteUrl);
   return [
     check(
       "site-url",
@@ -182,18 +207,20 @@ function aiChecks(): LaunchCheck[] {
 function automationChecks(): LaunchCheck[] {
   const cronSecret = env("GUEST_AUTOMATION_CRON_SECRET") || env("CRON_SECRET");
   const production = process.env.NODE_ENV === "production";
+  const deliveryEnabled = env("GUEST_AUTOMATION_DELIVERY_ENABLED").toLowerCase() === "true";
+  const missingStatus = production && deliveryEnabled ? "blocked" : "warning";
 
   return [
     check(
       "automation-cron-secret",
       "Automations",
       "Secret scheduler/cron",
-      cronSecret.length >= 32 ? "passed" : production ? "blocked" : "warning",
+      cronSecret.length >= 32 ? "passed" : missingStatus,
       cronSecret.length >= 32
         ? "Schedulerul extern poate fi protejat cu Bearer token."
-        : production
+        : production && deliveryEnabled
           ? "Secretul pentru endpointul cron lipsește sau este prea scurt."
-          : "Secretul cron va fi obligatoriu la deploy; local endpointul poate fi testat fără el.",
+          : "Automatizările cu livrare reală sunt oprite; secretul cron trebuie configurat înainte de activarea lor.",
       "Setează GUEST_AUTOMATION_CRON_SECRET cu minimum 32 de caractere și configurează același Bearer token în schedulerul hostingului."
     ),
   ];
