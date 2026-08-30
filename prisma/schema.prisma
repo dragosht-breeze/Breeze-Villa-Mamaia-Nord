@@ -281,3 +281,12 @@ model AnalyticsEvent {
   @@index([channel, createdAt])
   @@map("analytics_events")
 }
+
+model JsonDocument {
+  key       String   @id
+  value     Json
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("json_documents")
+}

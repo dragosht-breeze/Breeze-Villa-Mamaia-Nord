@@ -3,6 +3,7 @@
   "version": "0.9.4-hotfix.5",
   "private": true,
   "scripts": {
+    "postinstall": "prisma generate",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

@@ -1,5 +1,6 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { getPrisma, hasDatabase } from "@/lib/db/prisma";
 
 export type JsonRepositoryOptions<T> = {
   fileName: string;
@@ -50,6 +51,16 @@ export class JsonFileRepository<T> {
   }
 
   async read(): Promise<T> {
+    if (hasDatabase()) {
+      const document = await getPrisma().jsonDocument.findUnique({
+        where: { key: this.options.fileName },
+      });
+
+      return document
+        ? this.normalize(document.value)
+        : cloneValue(this.options.createDefault());
+    }
+
     await this.ensureFile();
 
     try {
@@ -61,6 +72,15 @@ export class JsonFileRepository<T> {
   }
 
   async write(value: T): Promise<T> {
+    if (hasDatabase()) {
+      await getPrisma().jsonDocument.upsert({
+        where: { key: this.options.fileName },
+        create: { key: this.options.fileName, value: value as never },
+        update: { value: value as never },
+      });
+      return value;
+    }
+
     await this.ensureFile();
 
     const previous = writeQueues.get(this.filePath) ?? Promise.resolve();
@@ -87,6 +107,13 @@ export class JsonFileRepository<T> {
     const next = previous
       .catch(() => undefined)
       .then(async () => {
+        if (hasDatabase()) {
+          const current = await this.read();
+          result = await mutator(current);
+          await this.write(result);
+          return;
+        }
+
         await this.ensureFile();
         const current = await this.read();
         result = await mutator(current);
