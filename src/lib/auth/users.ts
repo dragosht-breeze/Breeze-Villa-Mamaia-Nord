@@ -6,6 +6,26 @@ import type { AuthUser, PublicAuthUser, UserRole } from "./types";
 const repository = new JsonFileRepository<AuthUser[]>({ fileName: "users.json", createDefault: () => [] });
 
 function normalizeEmail(email: string) { return email.trim().toLowerCase(); }
+
+function configuredAdmin(): AuthUser | null {
+  const name = process.env.BREEZE_ADMIN_NAME?.trim();
+  const email = process.env.BREEZE_ADMIN_EMAIL?.trim();
+  const password = process.env.BREEZE_ADMIN_PASSWORD ?? "";
+
+  if (!name || !email || password.length < 12) return null;
+
+  return {
+    id: `env-admin:${normalizeEmail(email)}`,
+    name,
+    email: normalizeEmail(email),
+    role: "ADMIN",
+    active: true,
+    passwordHash: hashPassword(password),
+    createdAt: "1970-01-01T00:00:00.000Z",
+    updatedAt: "1970-01-01T00:00:00.000Z",
+  };
+}
+
 function publicUser(user: AuthUser): PublicAuthUser {
   return {
     id: user.id,
@@ -48,11 +68,17 @@ async function ensureInitialAdmin(): Promise<AuthUser[]> {
 }
 
 export async function findUserByEmail(email: string): Promise<AuthUser | null> {
+  const admin = configuredAdmin();
+  if (admin?.email === normalizeEmail(email)) return admin;
+
   const users = await ensureInitialAdmin();
   return users.find((user) => user.email === normalizeEmail(email)) ?? null;
 }
 
 export async function findUserById(id: string): Promise<AuthUser | null> {
+  const admin = configuredAdmin();
+  if (admin?.id === id) return admin;
+
   const users = await ensureInitialAdmin();
   return users.find((user) => user.id === id) ?? null;
 }
