@@ -79,7 +79,12 @@ function isVacationPayment(reservation: Reservation) {
 
 
 function dateKey(date: Date) {
-  return date.toISOString().slice(0, 10);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function shortDate(value: string) {
+  const [, month, day] = value.split("-");
+  return `${day}.${month}`;
 }
 
 function addDays(date: Date, amount: number) {
@@ -583,7 +588,7 @@ export default function OperationalCalendar() {
                           ))}
                         </div>
 
-                        {today >= dateKey(startDate) && today < rangeEnd ? (
+                        {today >= dateKey(calendarStart) && today < rangeEnd ? (
                           <div
                             className="pointer-events-none absolute inset-y-0 z-10 w-px bg-red-400"
                             style={{ left: view === "month"
@@ -782,14 +787,14 @@ export default function OperationalCalendar() {
                             ? `calc(${startOffset} * ${dayWidth} + 2px)`
                             : startOffset * Number.parseInt(dayWidth, 10) + 3;
                           const width = view === "month"
-                            ? `calc(${spanDays} * ${dayWidth} - 4px)`
+                            ? `calc(${spanDays} * ${dayWidth} - 10px)`
                             : spanDays * Number.parseInt(dayWidth, 10) - 6;
 
                           return (
                             <div
                               key={`booking:${event.id}`}
                               className="absolute z-30 overflow-hidden rounded-lg border border-violet-400 bg-violet-100 px-2 py-1.5 text-left text-violet-950 shadow-sm"
-                              title={`Booking.com • ${event.summary} • ${event.start} → ${event.end}`}
+                              title={`Booking.com • ${event.summary} • ocupat ${event.start} – ${event.end} (check-out) • liber din ${event.end}`}
                               style={{
                                 left,
                                 width,
@@ -800,7 +805,7 @@ export default function OperationalCalendar() {
                               <p className="truncate text-xs font-black">Booking.com</p>
                               {view !== "month" ? (
                                 <p className="mt-0.5 truncate text-[9px] font-bold opacity-75">
-                                  {event.start.slice(5)} → {event.end.slice(5)}
+                                  {shortDate(event.start)} → check-out {shortDate(event.end)} · liber din {shortDate(event.end)}
                                 </p>
                               ) : null}
                             </div>
