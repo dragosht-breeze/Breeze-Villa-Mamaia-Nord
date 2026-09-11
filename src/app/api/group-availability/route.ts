@@ -82,7 +82,8 @@ function getStayDates(checkIn: string, checkOut: string) {
 }
 
 function isBlockedStatus(status: DayStatus) {
-  return status === "booked" || status === "checkin" || status === "checkout";
+  // Check-out eliberează apartamentul pentru noaptea care începe în acea zi.
+  return status === "booked" || status === "checkin";
 }
 
 function priority(status: DayStatus) {

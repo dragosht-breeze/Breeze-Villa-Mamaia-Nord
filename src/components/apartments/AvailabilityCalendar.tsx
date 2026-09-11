@@ -76,8 +76,10 @@ function buildMonthCells(monthDate: Date): CalendarCell[] {
   });
 }
 
-function isBlockedStatus(status: DayStatus) {
-  return status === "booked" || status === "checkin" || status === "checkout";
+function isUnavailableNight(status: DayStatus) {
+  // Ziua de check-out nu este o noapte ocupată: următorul oaspete poate
+  // face check-in în aceeași zi, după plecarea celui anterior.
+  return status === "booked" || status === "checkin";
 }
 
 function statusClass(status: DayStatus, isSelected: boolean, isInRange: boolean) {
@@ -86,7 +88,7 @@ function statusClass(status: DayStatus, isSelected: boolean, isInRange: boolean)
 
   if (status === "booked") return "bg-red-100 text-red-600 line-through opacity-80";
   if (status === "checkin") return "bg-amber-100 text-amber-800 line-through opacity-85";
-  if (status === "checkout") return "bg-sky-100 text-sky-800 line-through opacity-85";
+  if (status === "checkout") return "bg-sky-100 text-sky-800 hover:bg-sky-200";
 
   return "bg-[#E9F8F8] text-[#071B2D] hover:bg-[#D9B56D]";
 }
@@ -137,7 +139,7 @@ export default function AvailabilityCalendar({ days, onSelectionChange }: Availa
   const minNights = rangeDays.length > 0
     ? Math.max(...rangeDays.map((day) => day.minNights))
     : days[0]?.minNights ?? 1;
-  const hasUnavailableDays = rangeDays.some((day) => isBlockedStatus(day.status));
+  const hasUnavailableDays = rangeDays.some((day) => isUnavailableNight(day.status));
   const canRequest = Boolean(checkIn && checkOut && nights >= minNights && !hasUnavailableDays);
 
   useEffect(() => {
@@ -155,7 +157,7 @@ export default function AvailabilityCalendar({ days, onSelectionChange }: Availa
   function handleSelect(dateKey: string) {
     const day = availabilityByDate.get(dateKey);
 
-    if (!day || isBlockedStatus(day.status)) return;
+    if (!day || isUnavailableNight(day.status)) return;
 
     if (!checkIn || checkOut || dateKey <= checkIn) {
       setCheckIn(dateKey);
@@ -172,7 +174,7 @@ export default function AvailabilityCalendar({ days, onSelectionChange }: Availa
       const cursorKey = toDateKey(cursor);
       const cursorDay = availabilityByDate.get(cursorKey);
 
-      if (!cursorDay || isBlockedStatus(cursorDay.status)) {
+      if (!cursorDay || isUnavailableNight(cursorDay.status)) {
         containsBlockedDay = true;
         break;
       }
@@ -235,7 +237,7 @@ export default function AvailabilityCalendar({ days, onSelectionChange }: Availa
           const status = day?.status ?? "available";
           const isSelected = cell.dateKey === checkIn || cell.dateKey === checkOut;
           const isInRange = selectedRange.includes(cell.dateKey);
-          const isBlocked = isBlockedStatus(status);
+          const isBlocked = isUnavailableNight(status);
 
           return (
             <button
@@ -252,6 +254,10 @@ export default function AvailabilityCalendar({ days, onSelectionChange }: Availa
                   {isBlocked ? (
                     <span className="mt-0.5 block text-[8px] font-black uppercase opacity-80">
                       {day.source === "booking" ? "Booking" : "Ocupat"}
+                    </span>
+                  ) : status === "checkout" ? (
+                    <span className="mt-0.5 block text-[8px] font-black uppercase opacity-80">
+                      Plecare
                     </span>
                   ) : (
                     <span className="mt-0.5 block text-[9px] font-bold opacity-80">{day.price} lei</span>
