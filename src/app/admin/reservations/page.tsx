@@ -279,12 +279,38 @@ export default function AdminReservationsPage() {
         method: "POST",
       });
 
-      if (!response.ok) {
-        throw new Error("Nu am putut confirma avansul.");
+      const data = (await response.json()) as {
+        ok: boolean;
+        reservationConfirmed?: boolean;
+        message?: string;
+      };
+
+      if (!response.ok || !data.ok) {
+        if (data.reservationConfirmed) await loadRequests();
+        throw new Error(data.message ?? "Nu am putut confirma avansul.");
       }
 
-      setMessage("Avans confirmat. Emailul de confirmare a fost procesat.");
+      setMessage(data.message ?? "Avans confirmat și e-mail trimis.");
       await loadRequests();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "A apărut o eroare.");
+    }
+  }
+
+  async function resendConfirmation(id: string) {
+    setMessage(null);
+
+    try {
+      const response = await fetch(`/api/admin/reservations/${id}/resend-confirmation`, {
+        method: "POST",
+      });
+      const data = (await response.json()) as { ok: boolean; message?: string };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.message ?? "E-mailul nu a putut fi retrimis.");
+      }
+
+      setMessage(data.message ?? "E-mailul de confirmare a fost retrimis.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "A apărut o eroare.");
     }
@@ -437,6 +463,14 @@ export default function AdminReservationsPage() {
                           Anulează
                         </button>
                       </>
+                    )}
+                    {(request.status === "confirmed_deposit" || request.status === "paid_full") && request.guest.email && (
+                      <button
+                        onClick={() => resendConfirmation(request.id)}
+                        className="rounded-full bg-[#071B2D] px-4 py-2 text-xs font-black text-white transition hover:bg-[#12385D]"
+                      >
+                        Retrimite confirmarea
+                      </button>
                     )}
                   </div>
                 </div>

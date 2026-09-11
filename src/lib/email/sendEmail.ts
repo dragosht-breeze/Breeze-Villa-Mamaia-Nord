@@ -16,14 +16,14 @@ export async function sendEmail(input: {
 }) {
   if (!input.to) {
     logger.warning("Email omis: destinatarul lipsește.");
-    return { skipped: true as const, reason: "missing_recipient" as const };
+    return { ok: false as const, skipped: true as const, reason: "missing_recipient" as const };
   }
 
   if (!resendApiKey) {
     logger.warning("Email omis: RESEND_API_KEY nu este configurat.", {
       attachmentCount: input.attachments?.length ?? 0,
     });
-    return { skipped: true as const, reason: "missing_api_key" as const };
+    return { ok: false as const, skipped: true as const, reason: "missing_api_key" as const };
   }
 
   try {
@@ -36,17 +36,28 @@ export async function sendEmail(input: {
       attachments: input.attachments,
     });
 
+    if (result.error) {
+      logger.error("Resend a respins trimiterea e-mailului.", {
+        error: result.error.message,
+      });
+
+      return { ok: false as const, error: result.error.message };
+    }
+
     logger.info("Email trimis prin Resend.", {
       messageId: result.data?.id,
       attachmentCount: input.attachments?.length ?? 0,
     });
 
-    return result;
+    return { ok: true as const, messageId: result.data?.id };
   } catch (error) {
     logger.error("Trimiterea e-mailului a eșuat.", {
       error: error instanceof Error ? error.message : "unknown_error",
     });
 
-    return { error };
+    return {
+      ok: false as const,
+      error: error instanceof Error ? error.message : "Eroare necunoscută la trimitere.",
+    };
   }
 }
