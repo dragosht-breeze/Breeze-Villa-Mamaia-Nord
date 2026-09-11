@@ -347,6 +347,28 @@ export default function AdminReservationsPage() {
     }
   }
 
+  async function resendCancellation(id: string) {
+    setMessage(null);
+
+    try {
+      const response = await fetch(`/api/admin/reservations/${id}/resend-cancellation`, {
+        method: "POST",
+      });
+      const responseText = await response.text();
+      const data = responseText
+        ? (JSON.parse(responseText) as { ok: boolean; message?: string })
+        : { ok: false, message: `Serverul nu a returnat un răspuns (cod ${response.status}).` };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.message ?? "E-mailul de anulare nu a putut fi trimis.");
+      }
+
+      setMessage(data.message ?? "E-mailul de anulare a fost trimis clientului.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "A apărut o eroare.");
+    }
+  }
+
   const folderByCode = useMemo(
     () => new Map(folders.map((folder) => [folder.code, folder])),
     [folders]
@@ -511,10 +533,18 @@ export default function AdminReservationsPage() {
                         Anulează rezervarea
                       </button>
                     )}
+                    {request.status === "cancelled" && request.guest.email && (
+                      <button
+                        onClick={() => resendCancellation(request.id)}
+                        className="rounded-full bg-[#071B2D] px-4 py-2 text-xs font-black text-white transition hover:bg-[#12385D]"
+                      >
+                        Trimite e-mailul de anulare
+                      </button>
+                    )}
                   </div>
                 </div>
 
-                {folder ? (
+                {folder && request.status !== "cancelled" ? (
                   <div className="mt-5 grid gap-3 md:grid-cols-[auto_1fr_auto] md:items-center rounded-[1.5rem] border border-black/5 bg-[#FAFAF7] p-4">
                     <span className={`w-fit rounded-full px-4 py-2 text-xs font-black ring-1 ${healthClasses[folder.health.level]}`}>
                       {folder.health.label}
