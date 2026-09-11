@@ -297,6 +297,16 @@ export default function AdminReservationsPage() {
     }
   }
 
+  async function cancelReservation(id: string) {
+    const confirmed = window.confirm(
+      "Sigur dorești să anulezi această rezervare? Perioada va fi eliberată în calendar."
+    );
+
+    if (!confirmed) return;
+
+    await updateStatus(id, "cancelled", "Rezervare anulată manual de proprietate.");
+  }
+
   async function resendConfirmation(id: string) {
     setMessage(null);
 
@@ -460,7 +470,7 @@ export default function AdminReservationsPage() {
                         </button>
 
                         <button
-                          onClick={() => updateStatus(request.id, "cancelled", "Cerere anulată manual de proprietate.")}
+                          onClick={() => cancelReservation(request.id)}
                           className="rounded-full bg-red-50 px-4 py-2 text-xs font-black text-red-700 transition hover:bg-red-100"
                         >
                           Anulează
@@ -473,6 +483,14 @@ export default function AdminReservationsPage() {
                         className="rounded-full bg-[#071B2D] px-4 py-2 text-xs font-black text-white transition hover:bg-[#12385D]"
                       >
                         Retrimite confirmarea
+                      </button>
+                    )}
+                    {(request.status === "confirmed_deposit" || request.status === "paid_full") && (
+                      <button
+                        onClick={() => cancelReservation(request.id)}
+                        className="rounded-full bg-red-50 px-4 py-2 text-xs font-black text-red-700 transition hover:bg-red-100"
+                      >
+                        Anulează rezervarea
                       </button>
                     )}
                   </div>
