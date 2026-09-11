@@ -304,7 +304,10 @@ export default function AdminReservationsPage() {
       const response = await fetch(`/api/admin/reservations/${id}/resend-confirmation`, {
         method: "POST",
       });
-      const data = (await response.json()) as { ok: boolean; message?: string };
+      const responseText = await response.text();
+      const data = responseText
+        ? (JSON.parse(responseText) as { ok: boolean; message?: string })
+        : { ok: false, message: `Serverul nu a returnat un răspuns (cod ${response.status}).` };
 
       if (!response.ok || !data.ok) {
         throw new Error(data.message ?? "E-mailul nu a putut fi retrimis.");

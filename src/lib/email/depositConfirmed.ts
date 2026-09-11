@@ -16,8 +16,21 @@ export async function sendDepositConfirmedEmail(reservation: ReservationRequest)
   const subject = `Confirmare rezervare Breeze Villa - ${reservation.id}`;
 
   const confirmationHtml = createBookingConfirmationHtml(reservation);
-  const pdfBuffer = await generatePdfFromHtml(confirmationHtml);
-  const pdfBase64 = Buffer.from(pdfBuffer).toString("base64");
+  let attachments: { filename: string; content: string }[] | undefined;
+
+  try {
+    const pdfBuffer = await generatePdfFromHtml(confirmationHtml);
+    attachments = [
+      {
+        filename: `Confirmare-${reservation.id}.pdf`,
+        content: Buffer.from(pdfBuffer).toString("base64"),
+      },
+    ];
+  } catch {
+    // On serverless hosting Chromium may be unavailable. The confirmation must
+    // still be delivered because all essential details are in the email body.
+    attachments = undefined;
+  }
 
   const html = `
     <div style="font-family: Arial, sans-serif; background:#FAFAF7; padding:30px;">
@@ -63,11 +76,6 @@ export async function sendDepositConfirmedEmail(reservation: ReservationRequest)
     to: reservation.guest.email,
     subject,
     html,
-    attachments: [
-      {
-        filename: `Confirmare-${reservation.id}.pdf`,
-        content: pdfBase64,
-      },
-    ],
+    attachments,
   });
 }
