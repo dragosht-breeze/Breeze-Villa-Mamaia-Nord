@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createReservationRequest } from "@/lib/reservationStore";
 import { createReservationFolder } from "@/lib/reservation-center/service";
+import { sendNewReservationAdminAlert } from "@/lib/whatsapp/adminReservationAlert";
 
 export const runtime = "nodejs";
 
@@ -128,6 +129,22 @@ export async function POST(request: Request) {
       paymentAmount: payload.paymentAmount,
       legacyRequestIds: created.map((item) => item.id),
     });
+
+    try {
+      await sendNewReservationAdminAlert({
+        code,
+        guestName: payload.guest!.name!,
+        apartmentNames: apartments.map((apartment) => apartment.title),
+        checkIn: payload.checkIn!,
+        checkOut: payload.checkOut!,
+        total,
+      });
+    } catch (error) {
+      console.error("Admin WhatsApp group reservation alert failed", {
+        reservationCode: code,
+        error: error instanceof Error ? error.message : "unknown_error",
+      });
+    }
 
     return NextResponse.json({
       ok: true,

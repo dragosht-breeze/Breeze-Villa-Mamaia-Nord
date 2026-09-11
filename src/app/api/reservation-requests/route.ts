@@ -5,6 +5,7 @@ import {
 } from "@/lib/reservationStore";
 import { createReservationFolder } from "@/lib/reservation-center/service";
 import { calculateRequiredDeposit } from "@/lib/payments/payment-policy";
+import { sendNewReservationAdminAlert } from "@/lib/whatsapp/adminReservationAlert";
 
 export const runtime = "nodejs";
 
@@ -105,6 +106,22 @@ export async function POST(request: Request) {
       paymentAmount: deposit.requiredDeposit,
       legacyRequestIds: [reservationRequest.id],
     });
+
+    try {
+      await sendNewReservationAdminAlert({
+        code: reservationRequest.id,
+        guestName: reservationRequest.guest.name,
+        apartmentNames: [reservationRequest.apartmentTitle],
+        checkIn: reservationRequest.checkIn,
+        checkOut: reservationRequest.checkOut,
+        total: reservationRequest.total,
+      });
+    } catch (error) {
+      console.error("Admin WhatsApp reservation alert failed", {
+        reservationCode: reservationRequest.id,
+        error: error instanceof Error ? error.message : "unknown_error",
+      });
+    }
 
     return NextResponse.json({
       ok: true,
