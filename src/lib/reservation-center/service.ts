@@ -61,6 +61,27 @@ export async function confirmFolderDepositByLegacyRequestId(id:string,note?:stri
   return saveReservationFolder(next);
 }
 
+export async function cancelFolderByLegacyRequestId(id: string, note?: string) {
+  const folder = await getReservationFolderByLegacyRequestId(id);
+  if (!folder) return null;
+  const next: ReservationFolder = {
+    ...folder,
+    lifecycleStatus: "cancelled",
+    updatedAt: now(),
+    timeline: [
+      ...folder.timeline,
+      event({
+        category: "reservation",
+        action: "cancelled",
+        title: "Rezervarea a fost anulată",
+        note: note ?? "Rezervare anulată manual din Admin.",
+        actor: "admin",
+      }),
+    ],
+  };
+  return saveReservationFolder(next);
+}
+
 export async function updateReservationOperations(
   code: string,
   input: {

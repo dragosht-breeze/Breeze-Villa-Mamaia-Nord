@@ -304,7 +304,25 @@ export default function AdminReservationsPage() {
 
     if (!confirmed) return;
 
-    await updateStatus(id, "cancelled", "Rezervare anulată manual de proprietate.");
+    setMessage(null);
+
+    try {
+      const response = await fetch(`/api/admin/reservations/${id}/cancel`, { method: "POST" });
+      const responseText = await response.text();
+      const data = responseText
+        ? (JSON.parse(responseText) as { ok: boolean; reservationCancelled?: boolean; message?: string })
+        : { ok: false, message: `Serverul nu a returnat un răspuns (cod ${response.status}).` };
+
+      if (!response.ok || !data.ok) {
+        if (data.reservationCancelled) await loadRequests();
+        throw new Error(data.message ?? "Rezervarea nu a putut fi anulată.");
+      }
+
+      setMessage(data.message ?? "Rezervarea a fost anulată și clientul a fost informat.");
+      await loadRequests();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "A apărut o eroare.");
+    }
   }
 
   async function resendConfirmation(id: string) {
