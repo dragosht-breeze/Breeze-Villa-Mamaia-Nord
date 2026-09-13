@@ -1,4 +1,4 @@
-import { sendWhatsAppTemplate } from "@/lib/whatsapp/service";
+import { sendWhatsAppText } from "@/lib/whatsapp/service";
 
 type NewReservationAlert = {
   code: string;
@@ -19,10 +19,8 @@ function formatDate(value: string) {
 
 export async function sendNewReservationAdminAlert(input: NewReservationAlert) {
   const recipient = process.env.WHATSAPP_ADMIN_PHONE?.trim();
-  const templateName = process.env.WHATSAPP_TEMPLATE_NEW_RESERVATION_ADMIN?.trim();
-  const language = process.env.WHATSAPP_TEMPLATE_LANGUAGE?.trim() || "ro";
 
-  if (!recipient || !templateName) {
+  if (!recipient) {
     return {
       ok: false as const,
       skipped: true as const,
@@ -30,13 +28,14 @@ export async function sendNewReservationAdminAlert(input: NewReservationAlert) {
     };
   }
 
-  return sendWhatsAppTemplate(recipient, templateName, language, [
-    input.code,
-    input.guestName,
-    input.apartmentNames.join(", "),
-    formatDate(input.checkIn),
-    formatDate(input.checkOut),
-    String(Math.round(input.total)),
-  ]);
-}
+  const message = [
+    "Rezervare noua Breeze Villa",
+    `Cod: ${input.code}`,
+    `Oaspete: ${input.guestName}`,
+    `Apartament: ${input.apartmentNames.join(", ")}`,
+    `Perioada: ${formatDate(input.checkIn)} - ${formatDate(input.checkOut)}`,
+    `Total: ${Math.round(input.total)} RON`,
+  ].join("\n");
 
+  return sendWhatsAppText(recipient, message);
+}

@@ -6,6 +6,7 @@ import {
 import { createReservationFolder } from "@/lib/reservation-center/service";
 import { calculateRequiredDeposit } from "@/lib/payments/payment-policy";
 import { sendNewReservationAdminAlert } from "@/lib/whatsapp/adminReservationAlert";
+import { sendNewReservationAdminEmail } from "@/lib/email/adminNewReservation";
 
 export const runtime = "nodejs";
 
@@ -118,6 +119,22 @@ export async function POST(request: Request) {
       });
     } catch (error) {
       console.error("Admin WhatsApp reservation alert failed", {
+        reservationCode: reservationRequest.id,
+        error: error instanceof Error ? error.message : "unknown_error",
+      });
+    }
+
+    try {
+      await sendNewReservationAdminEmail({
+        code: reservationRequest.id,
+        guestName: reservationRequest.guest.name,
+        apartmentNames: [reservationRequest.apartmentTitle],
+        checkIn: reservationRequest.checkIn,
+        checkOut: reservationRequest.checkOut,
+        total: reservationRequest.total,
+      });
+    } catch (error) {
+      console.error("Admin email reservation alert failed", {
         reservationCode: reservationRequest.id,
         error: error instanceof Error ? error.message : "unknown_error",
       });
