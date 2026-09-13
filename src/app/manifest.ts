@@ -14,7 +14,7 @@ export default function manifest(): MetadataRoute.Manifest {
     categories: ["travel", "lifestyle"],
     icons: [
       {
-        src: "/branding/favicon.png",
+        src: "/branding/favicon-bv-20260914.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "any",
