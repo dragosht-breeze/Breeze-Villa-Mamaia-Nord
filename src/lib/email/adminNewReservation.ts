@@ -29,7 +29,9 @@ function formatDate(value: string) {
 export async function sendNewReservationAdminEmail(
   input: NewReservationAdminEmail
 ) {
-  const recipient = process.env.BREEZE_ADMIN_EMAIL?.trim();
+  const recipient =
+    process.env.BREEZE_NOTIFICATION_EMAIL?.trim() ||
+    process.env.BREEZE_ADMIN_EMAIL?.trim();
   const code = escapeHtml(input.code);
   const guestName = escapeHtml(input.guestName);
   const apartments = escapeHtml(input.apartmentNames.join(", "));
