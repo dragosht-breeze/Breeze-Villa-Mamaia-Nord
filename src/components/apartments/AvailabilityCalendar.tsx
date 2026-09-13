@@ -82,7 +82,13 @@ function isUnavailableNight(status: DayStatus) {
   return status === "booked" || status === "checkin";
 }
 
-function statusClass(status: DayStatus, isSelected: boolean, isInRange: boolean) {
+function statusClass(
+  status: DayStatus,
+  isSelected: boolean,
+  isInRange: boolean,
+  isPast: boolean
+) {
+  if (isPast) return "bg-gray-100 text-gray-400 opacity-70";
   if (isSelected) return "bg-[#071B2D] text-white ring-2 ring-[#D9B56D]";
   if (isInRange) return "bg-[#D9B56D]/35 text-[#071B2D]";
 
@@ -106,10 +112,10 @@ export default function AvailabilityCalendar({ days, onSelectionChange }: Availa
     return new Map(days.map((day) => [day.date, day]));
   }, [days]);
 
-  const firstDate = days[0]?.date ? fromDateKey(days[0].date) : new Date();
-  const [currentMonth, setCurrentMonth] = useState(
-    new Date(firstDate.getFullYear(), firstDate.getMonth(), 1)
-  );
+  const today = new Date();
+  const todayKey = toDateKey(today);
+  const currentCalendarMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const [currentMonth, setCurrentMonth] = useState(currentCalendarMonth);
   const [checkIn, setCheckIn] = useState<string | null>(null);
   const [checkOut, setCheckOut] = useState<string | null>(null);
 
@@ -157,7 +163,7 @@ export default function AvailabilityCalendar({ days, onSelectionChange }: Availa
   function handleSelect(dateKey: string) {
     const day = availabilityByDate.get(dateKey);
 
-    if (!day || isUnavailableNight(day.status)) return;
+    if (dateKey < todayKey || !day || isUnavailableNight(day.status)) return;
 
     if (!checkIn || checkOut || dateKey <= checkIn) {
       setCheckIn(dateKey);
@@ -197,9 +203,21 @@ export default function AvailabilityCalendar({ days, onSelectionChange }: Availa
   }
 
   function changeMonth(amount: number) {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + amount, 1));
+    const nextMonth = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth() + amount,
+      1
+    );
+
+    if (nextMonth < currentCalendarMonth) return;
+
+    setCurrentMonth(nextMonth);
     clearSelection();
   }
+
+  const isCurrentCalendarMonth =
+    currentMonth.getFullYear() === currentCalendarMonth.getFullYear() &&
+    currentMonth.getMonth() === currentCalendarMonth.getMonth();
 
   return (
     <div className="rounded-[1.6rem] bg-white p-4 shadow-[0_18px_45px_rgba(7,27,45,0.08)] ring-1 ring-black/5">
@@ -207,7 +225,8 @@ export default function AvailabilityCalendar({ days, onSelectionChange }: Availa
         <button
           type="button"
           onClick={() => changeMonth(-1)}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E9F8F8] text-lg font-black text-[#071B2D] transition hover:bg-[#D9B56D]"
+          disabled={isCurrentCalendarMonth}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E9F8F8] text-lg font-black text-[#071B2D] transition hover:bg-[#D9B56D] disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-300"
         >
           ‹
         </button>
@@ -238,15 +257,16 @@ export default function AvailabilityCalendar({ days, onSelectionChange }: Availa
           const isSelected = cell.dateKey === checkIn || cell.dateKey === checkOut;
           const isInRange = selectedRange.includes(cell.dateKey);
           const isBlocked = isUnavailableNight(status);
+          const isPast = cell.dateKey < todayKey;
 
           return (
             <button
               key={cell.dateKey}
               type="button"
-              disabled={!cell.isCurrentMonth || isBlocked || !day}
+              disabled={!cell.isCurrentMonth || isPast || isBlocked || !day}
               onClick={() => handleSelect(cell.dateKey)}
               title={day?.source ? `${cell.dateKey} • ${sourceLabel(day.source)}` : cell.dateKey}
-              className={`min-h-12 rounded-2xl p-1 text-center transition disabled:cursor-not-allowed disabled:opacity-70 ${statusClass(status, isSelected, isInRange)}`}
+              className={`min-h-12 rounded-2xl p-1 text-center transition disabled:cursor-not-allowed disabled:opacity-70 ${statusClass(status, isSelected, isInRange, isPast)}`}
             >
               <span className="block text-xs font-black">{cell.date.getDate()}</span>
               {cell.isCurrentMonth && day && (
