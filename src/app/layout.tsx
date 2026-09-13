@@ -4,12 +4,11 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BreezeVillaJsonLd from "@/components/seo/BreezeVillaJsonLd";
 import AIReceptionist from "@/components/ai/AIReceptionist";
+import { getSiteUrl } from "@/lib/site-url";
 
 import "./globals.css";
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
-  "https://breezevilla.ro";
+const siteUrl = getSiteUrl();
 
 const siteName = "Breeze Villa Mamaia Nord";
 

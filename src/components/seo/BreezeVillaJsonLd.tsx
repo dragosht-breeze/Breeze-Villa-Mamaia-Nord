@@ -1,6 +1,6 @@
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
-  "https://breezevilla.ro";
+import { getSiteUrl } from "@/lib/site-url";
+
+const siteUrl = getSiteUrl();
 
 const breezeVillaJsonLd = {
   "@context": "https://schema.org",

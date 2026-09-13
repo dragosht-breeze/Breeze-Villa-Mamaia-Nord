@@ -15,6 +15,7 @@ import {
 } from "@/data/apartments";
 
 import { getEffectiveAvailabilityDays } from "@/lib/rates/service";
+import { getSiteUrl } from "@/lib/site-url";
 
 type ApartmentPageProps = {
   params: Promise<{
@@ -22,9 +23,7 @@ type ApartmentPageProps = {
   }>;
 };
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
-  "https://breezevilla.ro";
+const siteUrl = getSiteUrl();
 
 function getAbsoluteUrl(path: string) {
   return new URL(encodeURI(path), `${siteUrl}/`).toString();
