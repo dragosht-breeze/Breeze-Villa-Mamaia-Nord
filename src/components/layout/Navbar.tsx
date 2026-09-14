@@ -8,6 +8,7 @@ import BreezeVillaLogo from "@/components/brand/BreezeVillaLogo";
 const navItems = [
   { label: "Acasă", href: "/" },
   { label: "Apartamente", href: "/#apartamente" },
+  { label: "Cazare", href: "/cazare-mamaia-nord" },
   { label: "Facilități", href: "/#facilități" },
   { label: "Galerie", href: "/#galerie" },
   { label: "Recenzii", href: "/#recenzii" },
