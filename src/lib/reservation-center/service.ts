@@ -61,6 +61,65 @@ export async function confirmFolderDepositByLegacyRequestId(id:string,note?:stri
   return saveReservationFolder(next);
 }
 
+export async function applyNetopiaPaymentNotification(input: {
+  code: string;
+  providerReference?: string;
+  amount: number;
+  currency: string;
+  status: "paid" | "failed" | "cancelled" | "processing" | "refunded";
+}) {
+  const folder = await getReservationFolder(input.code);
+  if (!folder) throw new Error("Reservation not found");
+  if (input.currency !== "RON") throw new Error("Payment currency mismatch");
+
+  const transactionIndex = folder.financial.transactions.findIndex(
+    (transaction) =>
+      transaction.kind === "payment" &&
+      (input.providerReference
+        ? transaction.providerReference === input.providerReference
+        : transaction.status === "redirect_required")
+  );
+  if (transactionIndex < 0) throw new Error("Payment transaction not found");
+
+  const transaction = folder.financial.transactions[transactionIndex];
+  if (Math.abs(transaction.amount - input.amount) > 0.009) {
+    throw new Error("Payment amount mismatch");
+  }
+
+  if (
+    transaction.status === input.status &&
+    (!input.providerReference || transaction.providerReference === input.providerReference)
+  ) {
+    return folder;
+  }
+
+  const timestamp = now();
+  const transactions = [...folder.financial.transactions];
+  transactions[transactionIndex] = {
+    ...transaction,
+    status: input.status,
+    providerReference: input.providerReference ?? transaction.providerReference,
+    note: `Status confirmat securizat de NETOPIA: ${input.status}.`,
+    updatedAt: timestamp,
+  };
+
+  const next = recalculate({
+    ...folder,
+    financial: { ...folder.financial, transactions },
+    timeline: [
+      ...folder.timeline,
+      event({
+        category: "payment",
+        action: `netopia_${input.status}`,
+        title: `NETOPIA a confirmat plata: ${input.status}`,
+        note: `Sumă: ${input.amount} ${input.currency}.`,
+        actor: "system",
+      }),
+    ],
+  });
+  return saveReservationFolder(next);
+}
+
 export async function cancelFolderByLegacyRequestId(id: string, note?: string) {
   const folder = await getReservationFolderByLegacyRequestId(id);
   if (!folder) return null;
