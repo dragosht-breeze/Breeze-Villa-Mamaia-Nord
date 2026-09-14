@@ -19,8 +19,8 @@ declare global {
 
 function initialiseGoogleTag(consent: Consent) {
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function gtag(...args: unknown[]) {
-    window.dataLayer.push(args);
+  window.gtag = function gtag(..._args: unknown[]) {
+    window.dataLayer.push(arguments);
   };
   window.gtag("consent", "default", {
     analytics_storage: consent === "accepted" ? "granted" : "denied",
