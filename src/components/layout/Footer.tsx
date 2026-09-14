@@ -1,5 +1,6 @@
 import Link from "next/link";
 import BreezeVillaLogo from "@/components/brand/BreezeVillaLogo";
+import NetopiaLogo from "@/components/brand/NetopiaLogo";
 import CookiePreferencesButton from "@/components/analytics/CookiePreferencesButton";
 
 const GOOGLE_MAPS_URL =
@@ -371,8 +372,9 @@ export default function Footer() {
         <div className="mt-12 border-t border-white/10 pt-7">
           <div className="mb-7 flex flex-col items-center gap-3 sm:items-start">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
-              Protecția consumatorilor
+              Plăți și protecția consumatorilor
             </p>
+            <NetopiaLogo />
             <a
               href={ANPC_SAL_URL}
               target="_blank"
