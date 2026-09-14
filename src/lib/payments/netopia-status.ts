@@ -69,7 +69,10 @@ export async function reconcileNetopiaPayment(code: string) {
     throw new Error("NETOPIA returned an invalid status response");
   }
 
-  if (!response.ok || data.error) {
+  // NETOPIA may include an `error` object with the success message
+  // "Approved". The HTTP status and the verified order/payment fields below
+  // determine whether this is a valid response.
+  if (!response.ok) {
     throw new Error(data.error?.message ?? `NETOPIA status failed (${response.status})`);
   }
 
