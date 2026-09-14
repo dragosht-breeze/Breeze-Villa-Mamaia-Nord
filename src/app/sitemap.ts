@@ -51,6 +51,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.35,
     },
+    {
+      url: `${siteUrl}/politica-cookie`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.2,
+    },
   ];
 
   const apartmentPages: MetadataRoute.Sitemap = apartments.map(

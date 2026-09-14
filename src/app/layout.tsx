@@ -4,6 +4,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BreezeVillaJsonLd from "@/components/seo/BreezeVillaJsonLd";
 import AIReceptionist from "@/components/ai/AIReceptionist";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import { getSiteUrl } from "@/lib/site-url";
 
 import "./globals.css";
@@ -163,6 +164,8 @@ export default function RootLayout({
         <Footer />
 
         <AIReceptionist />
+
+        <GoogleAnalytics />
       </body>
     </html>
   );

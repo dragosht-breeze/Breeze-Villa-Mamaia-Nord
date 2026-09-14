@@ -1,5 +1,6 @@
 import Link from "next/link";
 import BreezeVillaLogo from "@/components/brand/BreezeVillaLogo";
+import CookiePreferencesButton from "@/components/analytics/CookiePreferencesButton";
 
 const GOOGLE_MAPS_URL =
   "https://www.google.com/maps/search/?api=1&query=44.29479137620329%2C28.617728027051683";
@@ -372,9 +373,12 @@ export default function Footer() {
               drepturile rezervate.
             </p>
 
-            <p className="text-slate-600">
-              Confort pentru familii, aproape de mare.
-            </p>
+            <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-slate-500 sm:justify-end">
+              <Link href="/politica-cookie" className="transition hover:text-white">
+                Politica de cookie-uri
+              </Link>
+              <CookiePreferencesButton />
+            </div>
           </div>
         </div>
       </div>
