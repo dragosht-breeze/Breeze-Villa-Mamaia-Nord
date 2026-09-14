@@ -5,6 +5,7 @@ import Footer from "@/components/layout/Footer";
 import BreezeVillaJsonLd from "@/components/seo/BreezeVillaJsonLd";
 import AIReceptionist from "@/components/ai/AIReceptionist";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
+import LanguageProvider from "@/components/i18n/LanguageProvider";
 import { getSiteUrl } from "@/lib/site-url";
 
 import "./globals.css";
@@ -155,17 +156,19 @@ export default function RootLayout({
         className="min-h-full bg-[#FAFAF7] font-sans"
         suppressHydrationWarning
       >
-        <BreezeVillaJsonLd />
+        <LanguageProvider>
+          <BreezeVillaJsonLd />
 
-        <Navbar />
+          <Navbar />
 
-        {children}
+          {children}
 
-        <Footer />
+          <Footer />
 
-        <AIReceptionist />
+          <AIReceptionist />
 
-        <GoogleAnalytics />
+          <GoogleAnalytics />
+        </LanguageProvider>
       </body>
     </html>
   );

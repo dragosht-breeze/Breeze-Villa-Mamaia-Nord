@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CalendarDays, Menu, MessageCircle, X } from "lucide-react";
 import { useState } from "react";
 import BreezeVillaLogo from "@/components/brand/BreezeVillaLogo";
+import LanguageSelector from "@/components/i18n/LanguageSelector";
 
 const navItems = [
   { label: "Acasă", href: "/" },
@@ -53,6 +54,7 @@ export default function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <LanguageSelector />
           <a
             href="https://wa.me/40723253405"
             target="_blank"
@@ -99,6 +101,7 @@ export default function Navbar() {
           </div>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <LanguageSelector mobile />
             <a
               href="https://wa.me/40723253405"
               target="_blank"
