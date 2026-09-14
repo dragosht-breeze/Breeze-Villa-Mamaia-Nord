@@ -217,6 +217,12 @@ export default function CazareMamaiaNordPage() {
         </div>
         <div className="mt-10 text-center">
           <Link
+            href="/ghid-mamaia-nord-navodari"
+            className="mr-3 inline-flex rounded-full border border-[#071B2D]/15 px-8 py-4 text-sm font-black text-[#071B2D] transition hover:bg-[#E9F8F8]"
+          >
+            Descoperă zona
+          </Link>
+          <Link
             href="/apartamente-mamaia-nord"
             className="mr-3 inline-flex rounded-full border border-[#071B2D]/15 px-8 py-4 text-sm font-black text-[#071B2D] transition hover:bg-[#E9F8F8]"
           >
