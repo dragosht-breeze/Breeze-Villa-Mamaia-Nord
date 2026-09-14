@@ -209,6 +209,12 @@ export default function CazareMamaiaNordPage() {
         </div>
         <div className="mt-10 text-center">
           <Link
+            href="/apartamente-mamaia-nord"
+            className="mr-3 inline-flex rounded-full border border-[#071B2D]/15 px-8 py-4 text-sm font-black text-[#071B2D] transition hover:bg-[#E9F8F8]"
+          >
+            Compară apartamentele
+          </Link>
+          <Link
             href="/rezervare"
             className="inline-flex rounded-full bg-[#071B2D] px-8 py-4 text-sm font-black text-white transition hover:bg-[#158F91]"
           >

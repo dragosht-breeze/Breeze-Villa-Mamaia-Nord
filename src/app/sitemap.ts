@@ -28,6 +28,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.95,
     },
     {
+      url: `${siteUrl}/apartamente-mamaia-nord`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.95,
+    },
+    {
       url: `${siteUrl}/politica-anulare`,
       lastModified: now,
       changeFrequency: "yearly",

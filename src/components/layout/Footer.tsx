@@ -11,6 +11,7 @@ const navigationLinks = [
   { label: "Acasă", href: "/" },
   { label: "Apartamente", href: "/#apartamente" },
   { label: "Cazare Mamaia Nord", href: "/cazare-mamaia-nord" },
+  { label: "Apartamente Mamaia Nord", href: "/apartamente-mamaia-nord" },
   { label: "Galerie", href: "/#galerie" },
   { label: "Recenzii", href: "/#recenzii" },
   { label: "Locație", href: "/#contact" },
