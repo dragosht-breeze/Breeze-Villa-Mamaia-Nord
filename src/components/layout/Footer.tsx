@@ -8,6 +8,8 @@ const GOOGLE_MAPS_URL =
 const WHATSAPP_URL =
   "https://wa.me/40723253405?text=Bun%C4%83%20ziua!%20Doresc%20informa%C8%9Bii%20despre%20cazarea%20la%20Breeze%20Villa.";
 
+const ANPC_SAL_URL = "https://reclamatiisal.anpc.ro";
+
 const navigationLinks = [
   { label: "Acasă", href: "/" },
   { label: "Apartamente", href: "/#apartamente" },
@@ -367,6 +369,29 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 border-t border-white/10 pt-7">
+          <div className="mb-7 flex flex-col items-center gap-3 sm:items-start">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+              Protecția consumatorilor
+            </p>
+            <a
+              href={ANPC_SAL_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Accesează platforma ANPC pentru soluționarea alternativă a litigiilor"
+              className="flex h-[50px] w-[250px] items-center overflow-hidden rounded-md border border-white/20 bg-white text-[#12335a] shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-[#66D7D4]/30"
+            >
+              <span className="flex h-full w-[68px] items-center justify-center bg-[#174f8f] text-sm font-black text-white">
+                ANPC
+              </span>
+              <span className="flex-1 px-3 text-left text-[11px] font-extrabold leading-[1.15]">
+                Soluționarea alternativă a litigiilor
+                <span className="mt-0.5 block text-[9px] font-semibold text-slate-500">
+                  Platforma SAL
+                </span>
+              </span>
+            </a>
+          </div>
+
           <div className="flex flex-col items-center justify-between gap-4 text-center text-xs text-slate-500 sm:flex-row sm:text-left">
             <p>
               © {new Date().getFullYear()} Breeze Villa Mamaia Nord. Toate
