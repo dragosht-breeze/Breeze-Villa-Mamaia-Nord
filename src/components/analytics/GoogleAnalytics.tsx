@@ -17,18 +17,26 @@ declare global {
   }
 }
 
-function startAnalytics() {
-  window["ga-disable-G-FL6B9369V4"] = false;
-  if (document.getElementById("breeze-villa-google-analytics")) return;
-
+function initialiseGoogleTag(consent: Consent) {
   window.dataLayer = window.dataLayer || [];
-  window.gtag = (...args: unknown[]) => window.dataLayer.push(args);
+  window.gtag = function gtag(...args: unknown[]) {
+    window.dataLayer.push(args);
+  };
+  window.gtag("consent", "default", {
+    analytics_storage: consent === "accepted" ? "granted" : "denied",
+    ad_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied",
+    wait_for_update: 500,
+  });
   window.gtag("js", new Date());
   window.gtag("config", MEASUREMENT_ID, {
     anonymize_ip: true,
     page_path: window.location.pathname + window.location.search,
+    send_page_view: false,
   });
 
+  if (document.getElementById("breeze-villa-google-analytics")) return;
   const script = document.createElement("script");
   script.id = "breeze-villa-google-analytics";
   script.async = true;
@@ -45,7 +53,12 @@ export default function GoogleAnalytics() {
     if (pathname.startsWith("/admin")) return;
 
     const saved = window.localStorage.getItem(CONSENT_KEY) as Consent;
-    setConsent(saved === "accepted" || saved === "declined" ? saved : null);
+    const initialConsent =
+      saved === "accepted" || saved === "declined" ? saved : null;
+    window["ga-disable-G-FL6B9369V4"] = initialConsent !== "accepted";
+    initialiseGoogleTag(initialConsent);
+    setConsent(initialConsent);
+    setReady(initialConsent === "accepted");
 
     const openPreferences = () => setConsent(null);
     window.addEventListener("breeze-villa-open-cookie-preferences", openPreferences);
@@ -54,18 +67,26 @@ export default function GoogleAnalytics() {
         "breeze-villa-open-cookie-preferences",
         openPreferences
       );
-  }, [pathname]);
+  }, []);
 
   useEffect(() => {
     if (consent !== "accepted" || pathname.startsWith("/admin")) return;
-    startAnalytics();
+    window["ga-disable-G-FL6B9369V4"] = false;
+    window.gtag?.("consent", "update", { analytics_storage: "granted" });
+    window.gtag?.("config", MEASUREMENT_ID, {
+      anonymize_ip: true,
+      send_page_view: false,
+      page_path: window.location.pathname + window.location.search,
+    });
     setReady(true);
   }, [consent, pathname]);
 
   useEffect(() => {
     if (!ready || !window.gtag) return;
-    window.gtag("config", MEASUREMENT_ID, {
-      page_path: pathname,
+    window.gtag("event", "page_view", {
+      page_title: document.title,
+      page_location: window.location.href,
+      page_path: pathname + window.location.search,
       anonymize_ip: true,
     });
   }, [pathname, ready]);
