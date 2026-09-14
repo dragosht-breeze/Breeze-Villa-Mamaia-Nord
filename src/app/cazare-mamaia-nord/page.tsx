@@ -192,6 +192,14 @@ export default function CazareMamaiaNordPage() {
               </li>
             ))}
           </ul>
+          <div className="lg:col-span-2">
+            <Link
+              href="/cazare-cu-piscina-mamaia-nord"
+              className="inline-flex rounded-full bg-[#071B2D] px-6 py-3 text-sm font-black text-white hover:bg-[#158F91]"
+            >
+              Cazare cu piscină pentru familii →
+            </Link>
+          </div>
         </div>
       </section>
 
