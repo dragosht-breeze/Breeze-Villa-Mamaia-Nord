@@ -14,9 +14,9 @@ import {
 
 const stats = [
   {
-    value: "4.9",
+    value: "5.0",
     label: "Google Reviews",
-    detail: "34 de recenzii ale oaspeților",
+    detail: "Peste 40 de recenzii ale oaspeților",
     icon: Star,
   },
   {
@@ -264,6 +264,16 @@ export default function Reviews() {
             >
               Vezi recenziile Google
               <ArrowUpRight aria-hidden="true" size={17} />
+            </a>
+
+            <a
+              href="https://g.page/r/CXSFrlBpn5MNEBM/review"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#D9B56D]/50 bg-[#D9B56D] px-6 py-3 text-sm font-black text-[#071B2D] shadow-xl transition-[transform,background-color] hover:-translate-y-0.5 hover:bg-white"
+            >
+              Lasă o recenzie
+              <Star aria-hidden="true" size={17} />
             </a>
 
             <Link
