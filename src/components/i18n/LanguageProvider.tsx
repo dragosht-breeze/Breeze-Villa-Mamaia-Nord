@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
+import { extraTranslations } from "@/components/i18n/translations-extra";
 
 export type SiteLanguage = "ro" | "en" | "ru";
 
@@ -68,6 +69,7 @@ const translations: Record<"en" | "ru", Record<string, string>> = {
     "Continuă rezervarea": "Continue booking", "Înapoi": "Back", "Continuă": "Continue",
     "Nume": "Name", "Prenume": "First name", "E-mail": "Email",
     "Confirmă rezervarea": "Confirm booking", "Total": "Total", "Plătește online": "Pay online",
+    ...extraTranslations.en,
   },
   ru: {
     "Acasă": "Главная", "Apartamente": "Апартаменты", "Cazare": "Проживание",
@@ -123,6 +125,7 @@ const translations: Record<"en" | "ru", Record<string, string>> = {
     "Continuă rezervarea": "Продолжить бронирование", "Înapoi": "Назад", "Continuă": "Продолжить",
     "Nume": "Фамилия", "Prenume": "Имя", "E-mail": "Эл. почта",
     "Confirmă rezervarea": "Подтвердить бронирование", "Total": "Итого", "Plătește online": "Оплатить онлайн",
+    ...extraTranslations.ru,
   },
 };
 
