@@ -21,6 +21,7 @@ import ReservationStepReview from "@/components/booking/ReservationStepReview";
 import ReservationStepPayment, {
   type ReservationPaymentChoice,
 } from "@/components/booking/ReservationStepPayment";
+import { trackAnalyticsEvent } from "@/lib/google-analytics";
 
 type Props = {
   result: BookingSearchResult;
@@ -192,6 +193,13 @@ export default function ReservationWizard({
       }
 
       const reservationCode = data.groupCode ?? "BREEZE";
+      trackAnalyticsEvent("generate_lead", {
+        currency: "RON",
+        value: combination.totalPrice,
+        lead_type: "group_booking",
+        nights: combination.nights,
+        apartment_count: combination.apartments.length,
+      });
       const paymentAmount =
         paymentChoice === "card_full" ||
         paymentChoice === "vacation_full_link"
@@ -248,6 +256,15 @@ export default function ReservationWizard({
           paymentData.message ?? "Plata nu a putut fi inițializată."
         );
       }
+
+      trackAnalyticsEvent("begin_checkout", {
+        currency: "RON",
+        value: paymentAmount,
+        payment_type: scope,
+        payment_method: method,
+        nights: combination.nights,
+        apartment_count: combination.apartments.length,
+      });
 
       if (paymentData.redirectUrl) {
         window.location.assign(paymentData.redirectUrl);

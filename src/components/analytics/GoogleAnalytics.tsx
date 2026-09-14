@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+  ANALYTICS_CONSENT_KEY,
+  trackAnalyticsEvent,
+} from "@/lib/google-analytics";
 
 const MEASUREMENT_ID = "G-FL6B9369V4";
-const CONSENT_KEY = "breeze-villa-analytics-consent";
 
 type Consent = "accepted" | "declined" | null;
 
@@ -52,7 +55,7 @@ export default function GoogleAnalytics() {
   useEffect(() => {
     if (pathname.startsWith("/admin")) return;
 
-    const saved = window.localStorage.getItem(CONSENT_KEY) as Consent;
+    const saved = window.localStorage.getItem(ANALYTICS_CONSENT_KEY) as Consent;
     const initialConsent =
       saved === "accepted" || saved === "declined" ? saved : null;
     window["ga-disable-G-FL6B9369V4"] = initialConsent !== "accepted";
@@ -89,12 +92,35 @@ export default function GoogleAnalytics() {
       page_path: pathname + window.location.search,
       anonymize_ip: true,
     });
+
+    if (pathname === "/rezervare") {
+      trackAnalyticsEvent("booking_page_view", {
+        page_path: pathname,
+      });
+    }
   }, [pathname, ready]);
+
+  useEffect(() => {
+    if (!ready) return;
+
+    const trackLinkClick = (event: MouseEvent) => {
+      const target = event.target as Element | null;
+      const link = target?.closest("a[href]") as HTMLAnchorElement | null;
+      if (!link || !link.href.includes("wa.me/")) return;
+
+      trackAnalyticsEvent("whatsapp_click", {
+        link_location: window.location.pathname,
+      });
+    };
+
+    document.addEventListener("click", trackLinkClick);
+    return () => document.removeEventListener("click", trackLinkClick);
+  }, [ready]);
 
   if (pathname.startsWith("/admin") || consent !== null) return null;
 
   const saveConsent = (value: Exclude<Consent, null>) => {
-    window.localStorage.setItem(CONSENT_KEY, value);
+    window.localStorage.setItem(ANALYTICS_CONSENT_KEY, value);
     if (value === "declined") {
       window["ga-disable-G-FL6B9369V4"] = true;
       window.gtag?.("consent", "update", { analytics_storage: "denied" });

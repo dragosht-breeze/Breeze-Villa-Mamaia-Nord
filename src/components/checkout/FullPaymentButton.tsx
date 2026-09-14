@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackAnalyticsEvent } from "@/lib/google-analytics";
 
 type FullPaymentButtonProps = {
   payload: {
@@ -45,6 +46,14 @@ export default function FullPaymentButton({ payload }: FullPaymentButtonProps) {
       if (!response.ok || !data.ok || !data.redirectUrl) {
         throw new Error(data.message ?? "Plata nu a putut fi inițiată.");
       }
+
+      trackAnalyticsEvent("begin_checkout", {
+        currency: "RON",
+        value: payload.total,
+        payment_type: "full_payment",
+        apartment_slug: payload.apartmentSlug,
+        nights: payload.nights,
+      });
 
       window.location.href = data.redirectUrl;
     } catch (error) {

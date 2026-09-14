@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import AvailabilityCalendar, { type CalendarSelection } from "@/components/apartments/AvailabilityCalendar";
 import type { AvailabilityDay } from "@/data/availability";
+import { trackAnalyticsEvent } from "@/lib/google-analytics";
 
 type BookingCardProps = {
   title: string;
@@ -264,6 +265,18 @@ export default function BookingCard({ title, slug, days }: BookingCardProps) {
         "Cererea dumneavoastră a fost transmisă cu succes. Perioada nu este blocată până la confirmarea avansului de către proprietate. Cererea este valabilă 48 de ore."
       );
 
+      trackAnalyticsEvent("generate_lead", {
+        currency: "RON",
+        value: selection.total,
+        lead_type: "deposit_request",
+        apartment_slug: slug,
+        nights: selection.nights,
+      });
+      trackAnalyticsEvent("whatsapp_click", {
+        link_location: "reservation_confirmation",
+        apartment_slug: slug,
+      });
+
       window.open(`https://wa.me/40723253405?text=${encodeURIComponent(whatsappMessage)}`, "_blank", "noopener,noreferrer");
     } catch (error) {
       setSubmitMessage(error instanceof Error ? error.message : "A apărut o eroare.");
@@ -455,7 +468,16 @@ export default function BookingCard({ title, slug, days }: BookingCardProps) {
             if (!canPayFull) {
               event.preventDefault();
               setSubmitMessage("Alege o perioadă disponibilă, completează numele și telefonul și acceptă Termenii și condițiile pentru plata integrală.");
+              return;
             }
+
+            trackAnalyticsEvent("begin_checkout", {
+              currency: "RON",
+              value: selection.total,
+              payment_type: "full_payment",
+              apartment_slug: slug,
+              nights: selection.nights,
+            });
           }}
           className={`flex w-full justify-center rounded-full px-6 py-4 text-center text-sm font-black shadow-xl transition ${
             canPayFull
