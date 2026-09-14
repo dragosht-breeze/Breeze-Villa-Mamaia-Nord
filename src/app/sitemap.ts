@@ -52,6 +52,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.35,
     },
     {
+      url: `${siteUrl}/termeni-si-conditii`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${siteUrl}/politica-confidentialitate`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${siteUrl}/politica-prestare-servicii`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
       url: `${siteUrl}/politica-cookie`,
       lastModified: now,
       changeFrequency: "yearly",

@@ -94,9 +94,9 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
           </p>
 
           <div className="mt-8 rounded-[1.5rem] bg-[#E9F8F8] p-6 text-sm leading-7 text-[#071B2D]">
-            <p className="font-black">Politica de anulare</p>
+            <p className="font-black">Condițiile rezervării și plății</p>
             <p className="mt-2">
-              Prin efectuarea plății confirmați că ați citit și acceptat Termenii și condițiile, precum și Politica de anulare a rezervărilor. Sumele achitate sunt nerambursabile în cazul anulării rezervării de către client.
+              Prin efectuarea plății confirmați că ați citit și acceptat <Link className="font-black underline" href="/termeni-si-conditii">Termenii și condițiile</Link>, precum și <Link className="font-black underline" href="/politica-anulare">Politica de anulare</Link>. Sumele achitate sunt nerambursabile în cazul anulării rezervării de către client.
             </p>
           </div>
 
@@ -115,10 +115,10 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
             </Link>
 
             <Link
-              href="/politica-anulare"
+              href="/termeni-si-conditii"
               className="rounded-full bg-[#D9B56D] px-6 py-3 text-sm font-black text-[#071B2D] transition hover:bg-white"
             >
-              Vezi politica de anulare
+              Vezi termenii și condițiile
             </Link>
           </div>
         </div>

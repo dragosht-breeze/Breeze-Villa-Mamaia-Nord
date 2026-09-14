@@ -1,6 +1,7 @@
 "use client";
 
 import { CalendarDays, Home, UserRound, WalletCards } from "lucide-react";
+import Link from "next/link";
 import type {
   BookingCombination,
   BookingSearchResult,
@@ -124,7 +125,7 @@ export default function ReservationStepReview({
         <span className="text-sm font-semibold leading-6 text-gray-600">
           Confirm că datele sunt corecte, că rezervarea este valabilă numai
           pentru numărul și componența de oaspeți declarate și că am luat la
-          cunoștință politica de anulare: <strong className="text-[#071B2D]">
+          cunoștință <Link href="/termeni-si-conditii" target="_blank" className="font-black text-[#071B2D] underline">Termenii și condițiile</Link> și <Link href="/politica-anulare" target="_blank" className="font-black text-[#071B2D] underline">politica de anulare</Link>: <strong className="text-[#071B2D]">
           Sumele achitate nu sunt rambursabile în cazul anulării.</strong>
         </span>
       </label>

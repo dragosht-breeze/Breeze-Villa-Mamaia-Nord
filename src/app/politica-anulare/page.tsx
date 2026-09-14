@@ -73,6 +73,12 @@ export default function CancellationPolicyPage() {
               doar după confirmarea avansului sau după plata integrală online.
             </p>
           </div>
+
+          <div className="rounded-[1.5rem] bg-[#FAFAF7] p-6">
+            <h2 className="text-2xl font-black text-[#071B2D]">Dreptul de retragere</h2>
+            <p className="mt-4">Serviciile de cazare rezervate pentru o dată sau o perioadă specifică sunt exceptate de la dreptul general de retragere de 14 zile, conform art. 16 lit. l) din OUG 34/2014. Condițiile de anulare afișate și acceptate înaintea plății rămân aplicabile.</p>
+            <p className="mt-4">Această excepție nu afectează drepturile legale ale clientului dacă serviciul nu este prestat sau nu corespunde celor confirmate.</p>
+          </div>
         </div>
       </section>
     </main>

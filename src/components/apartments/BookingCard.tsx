@@ -428,10 +428,9 @@ export default function BookingCard({ title, slug, days }: BookingCardProps) {
             className="mt-1 h-4 w-4 shrink-0 accent-[#158F91]"
           />
           <span>
-            Am citit și sunt de acord cu {" "}
-            <Link href="/politica-anulare" target="_blank" className="font-black text-[#071B2D] underline">
-              Termenii și condițiile și Politica de anulare
-            </Link>
+            Am citit și sunt de acord cu <Link href="/termeni-si-conditii" target="_blank" className="font-black text-[#071B2D] underline">Termenii și condițiile</Link>, {" "}
+            <Link href="/politica-anulare" target="_blank" className="font-black text-[#071B2D] underline">Politica de anulare</Link> și {" "}
+            <Link href="/politica-confidentialitate" target="_blank" className="font-black text-[#071B2D] underline">Politica de confidențialitate</Link>
             .
           </span>
         </label>

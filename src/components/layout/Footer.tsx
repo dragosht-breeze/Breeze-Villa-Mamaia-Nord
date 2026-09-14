@@ -373,7 +373,15 @@ export default function Footer() {
               drepturile rezervate.
             </p>
 
+            <p className="max-w-md text-center sm:text-left">
+              TOANCHINA DRAGOS PFA · CUI 53545068 · F2026004141000 · Str. C2 nr. 37, Năvodari, Constanța
+            </p>
+
             <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-slate-500 sm:justify-end">
+              <Link href="/termeni-si-conditii" className="transition hover:text-white">Termeni și condiții</Link>
+              <Link href="/politica-confidentialitate" className="transition hover:text-white">Confidențialitate</Link>
+              <Link href="/politica-prestare-servicii" className="transition hover:text-white">Prestarea serviciilor</Link>
+              <Link href="/politica-anulare" className="transition hover:text-white">Anulare</Link>
               <Link href="/politica-cookie" className="transition hover:text-white">
                 Politica de cookie-uri
               </Link>
