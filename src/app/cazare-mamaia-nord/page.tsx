@@ -10,7 +10,7 @@ const siteUrl = getSiteUrl();
 export const metadata: Metadata = {
   title: "Cazare Mamaia Nord – apartamente cu piscină",
   description:
-    "Cazare în Mamaia Nord, Mamaia Sat și Năvodari la Breeze Villa: apartamente spațioase, piscină, loc de joacă, parcare și rezervare directă.",
+    "Cazare în Mamaia, Mamaia Nord, Mamaia Sat și Năvodari la Breeze Villa: apartamente spațioase, piscină, loc de joacă, parcare și rezervare directă.",
   alternates: { canonical: "/cazare-mamaia-nord" },
   openGraph: {
     type: "website",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     url: "/cazare-mamaia-nord",
     title: "Cazare Mamaia Nord – Breeze Villa",
     description:
-      "Apartamente de vacanță pentru familii, cu piscină, loc de joacă și parcare, în Mamaia Nord – Năvodari.",
+      "Apartamente de vacanță pentru familii, cu piscină, loc de joacă și parcare, în Mamaia, Mamaia Nord – Năvodari.",
     images: [
       {
         url: "/images/apartments/apartament-3.jpg",
@@ -85,12 +85,12 @@ export default function CazareMamaiaNordPage() {
             Breeze Villa · Mamaia Nord · Năvodari
           </p>
           <h1 className="mt-5 max-w-4xl text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
-            Cazare în Mamaia Nord, în apartamente spațioase pentru vacanța la mare
+            Cazare în Mamaia și Mamaia Nord, în apartamente spațioase pentru vacanța la mare
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-8 text-slate-200 sm:text-lg">
             Alege un studio sau un apartament cu două ori trei camere la Breeze
             Villa, în Mamaia Sat – Năvodari. Ai confort, piscină, loc de joacă și
-            parcare privată într-un singur loc.
+            parcare privată pentru un sejur relaxant pe litoralul românesc.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Link
@@ -121,7 +121,7 @@ export default function CazareMamaiaNordPage() {
             Breeze Villa oferă o alternativă confortabilă la camera clasică de
             hotel: mai mult spațiu, bucătărie utilată și zone potrivite pentru un
             sejur relaxat. Locația este în Mamaia Sat, administrativ Năvodari,
-            aproape de zona turistică Mamaia Nord.
+            aproape de zona turistică Mamaia Nord și de stațiunea Mamaia.
           </p>
         </div>
 
