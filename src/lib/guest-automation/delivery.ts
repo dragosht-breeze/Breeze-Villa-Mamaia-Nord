@@ -10,7 +10,6 @@ import {
   saveReservationFolder,
 } from "@/lib/reservation-center/store";
 import type {
-  ReservationCommunication,
   ReservationFolder,
   ReservationTimelineEvent,
 } from "@/lib/reservation-center/types";

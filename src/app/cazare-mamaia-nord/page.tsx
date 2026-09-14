@@ -3,9 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { apartments } from "@/data/apartments";
-import { getSiteUrl } from "@/lib/site-url";
-
-const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   title: "Cazare Mamaia Nord – apartamente cu piscină",

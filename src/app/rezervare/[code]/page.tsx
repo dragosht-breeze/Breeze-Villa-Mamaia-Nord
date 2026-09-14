@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import PaymentStatusRefresh from "@/components/payments/PaymentStatusRefresh";
+import { reconcileNetopiaPayment } from "@/lib/payments/netopia-status";
 import { getReservationFolder } from "@/lib/reservation-center/store";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Confirmare plată rezervare",
@@ -25,12 +29,23 @@ export default async function ReservationReturnPage({
   const query = await searchParams;
   const code = safeCode(rawCode);
   const orderId = Array.isArray(query.orderId) ? query.orderId[0] : query.orderId;
-  const folder = code === rawCode ? await getReservationFolder(code) : null;
+  let folder = code === rawCode ? await getReservationFolder(code) : null;
+  if (folder && (!orderId || orderId === code)) {
+    try {
+      folder = await reconcileNetopiaPayment(code);
+    } catch (error) {
+      console.error("NETOPIA return status verification failed", {
+        code,
+        reason: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  }
   const paymentStatus = folder?.paymentStatus ?? "unpaid";
   const isConfirmed = paymentStatus === "paid" || paymentStatus === "partially_paid";
 
   return (
     <main className="min-h-screen bg-[#FAFAF7] px-5 py-16 sm:py-24">
+      {!isConfirmed ? <PaymentStatusRefresh /> : null}
       <section className="mx-auto max-w-3xl overflow-hidden rounded-[2rem] bg-white shadow-[0_24px_80px_rgba(7,27,45,0.12)]">
         <div className="bg-[#071B2D] px-6 py-10 text-center text-white sm:px-10">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-400/15 text-3xl text-emerald-300">
@@ -40,7 +55,9 @@ export default async function ReservationReturnPage({
             NETOPIA Payments · Sandbox
           </p>
           <h1 className="mt-3 text-3xl font-black sm:text-5xl">
-            Plata de test a fost procesată
+            {isConfirmed
+              ? "Plata de test a fost confirmată"
+              : "Plata de test este în verificare"}
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-sm font-semibold leading-6 text-white/75 sm:text-base">
             Ai revenit cu succes la Breeze Villa. Tranzacția Sandbox nu a
@@ -68,9 +85,9 @@ export default async function ReservationReturnPage({
                 : "Confirmarea automată este în curs de verificare."}
             </p>
             <p className="mt-2 text-sm font-semibold leading-6 text-gray-600">
-              Înainte de activarea plăților reale vom valida criptografic
-              notificarea NETOPIA și vom confirma rezervarea numai după
-              răspunsul autentic al procesatorului.
+              {isConfirmed
+                ? "Statusul a fost verificat direct la NETOPIA, iar rezervarea a fost actualizată automat."
+                : "Nu închide această pagină. Reîncarc-o peste câteva secunde; rezervarea va fi confirmată numai după răspunsul autentic al NETOPIA."}
             </p>
           </div>
 
@@ -95,4 +112,3 @@ export default async function ReservationReturnPage({
     </main>
   );
 }
-

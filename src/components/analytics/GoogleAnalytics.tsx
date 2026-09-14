@@ -23,6 +23,9 @@ declare global {
 function initialiseGoogleTag(consent: Consent) {
   window.dataLayer = window.dataLayer || [];
   window.gtag = function gtag(..._args: unknown[]) {
+    void _args;
+    // Google gtag requires the function's Arguments object in dataLayer.
+    // eslint-disable-next-line prefer-rest-params
     window.dataLayer.push(arguments);
   };
   window.gtag("consent", "default", {
