@@ -150,8 +150,16 @@ function replaceText(root: ParentNode, language: SiteLanguage) {
     const trimmed = raw.trim();
     if (!trimmed) continue;
     const normalized = trimmed.replace(/\s+/g, " ");
-    let original = reverse.get(normalized) ?? normalized;
-    if (!reverse.has(normalized)) {
+    const protectedTerms = ["Booking.com", "Breeze Villa", "Kaufland Mamaia Nord", "WhatsApp", "NETOPIA"];
+    const protectedValues: string[] = [];
+    let protectedText = normalized;
+    for (const term of protectedTerms) {
+      protectedText = protectedText.split(term).join(`\uE000${protectedValues.push(term) - 1}\uE001`);
+    }
+    const restoreProtected = (value: string) => value.replace(/\uE000(\d+)\uE001/g, (_, index) => protectedValues[Number(index)] ?? "");
+
+    let original = reverse.get(protectedText) ?? protectedText;
+    if (!reverse.has(protectedText)) {
       const translatedPhrases = [...reverse.entries()].sort((a, b) => b[0].length - a[0].length);
       for (const [translated, ro] of translatedPhrases) {
         if (translated.length >= 4 && original.includes(translated)) original = original.split(translated).join(ro);
@@ -164,6 +172,7 @@ function replaceText(root: ParentNode, language: SiteLanguage) {
         if (ro.length >= 4 && next.includes(ro)) next = next.split(ro).join(translated);
       }
     }
+    next = restoreProtected(next);
     if (next !== trimmed) node.nodeValue = raw.replace(trimmed, next);
   }
 
