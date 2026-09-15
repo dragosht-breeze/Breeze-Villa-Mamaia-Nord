@@ -53,25 +53,27 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
+        <div className="hidden flex-col items-end gap-1.5 md:flex">
           <LanguageSelector />
-          <a
-            href="https://wa.me/40723253405"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full border border-white/18 px-3.5 py-2 text-xs font-black text-white transition hover:border-[#25D366] hover:bg-[#25D366] hover:text-white xl:px-4"
-          >
-            <MessageCircle size={15} />
-            WhatsApp
-          </a>
+          <div className="flex items-center gap-2">
+            <a
+              href="https://wa.me/40723253405"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-white/18 px-3.5 py-2 text-xs font-black text-white transition hover:border-[#25D366] hover:bg-[#25D366] hover:text-white xl:px-4"
+            >
+              <MessageCircle size={15} />
+              WhatsApp
+            </a>
 
-          <Link
-            href="/rezervare"
-            className="inline-flex items-center gap-2 rounded-full bg-[#D9B56D] px-3.5 py-2 text-xs font-black text-[#071B2D] shadow-lg transition hover:-translate-y-0.5 hover:bg-white xl:px-4"
-          >
-            <CalendarDays size={15} />
-            Rezervă acum
-          </Link>
+            <Link
+              href="/rezervare"
+              className="inline-flex items-center gap-2 rounded-full bg-[#D9B56D] px-3.5 py-2 text-xs font-black text-[#071B2D] shadow-lg transition hover:-translate-y-0.5 hover:bg-white xl:px-4"
+            >
+              <CalendarDays size={15} />
+              Rezervă acum
+            </Link>
+          </div>
         </div>
 
         <button
@@ -101,7 +103,7 @@ export default function Navbar() {
           </div>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <LanguageSelector mobile />
+            <div className="sm:col-span-2"><LanguageSelector mobile /></div>
             <a
               href="https://wa.me/40723253405"
               target="_blank"

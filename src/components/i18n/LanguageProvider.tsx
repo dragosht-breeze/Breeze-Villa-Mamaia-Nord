@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { extraTranslations } from "@/components/i18n/translations-extra";
+import { pageTranslations } from "@/components/i18n/translations-pages";
 
 export type SiteLanguage = "ro" | "en" | "ru";
 
@@ -70,6 +71,7 @@ const translations: Record<"en" | "ru", Record<string, string>> = {
     "Nume": "Name", "Prenume": "First name", "E-mail": "Email",
     "Confirmă rezervarea": "Confirm booking", "Total": "Total", "Plătește online": "Pay online",
     ...extraTranslations.en,
+    ...pageTranslations.en,
   },
   ru: {
     "Acasă": "Главная", "Apartamente": "Апартаменты", "Cazare": "Проживание",
@@ -126,6 +128,7 @@ const translations: Record<"en" | "ru", Record<string, string>> = {
     "Nume": "Фамилия", "Prenume": "Имя", "E-mail": "Эл. почта",
     "Confirmă rezervarea": "Подтвердить бронирование", "Total": "Итого", "Plătește online": "Оплатить онлайн",
     ...extraTranslations.ru,
+    ...pageTranslations.ru,
   },
 };
 
@@ -146,8 +149,9 @@ function replaceText(root: ParentNode, language: SiteLanguage) {
     const raw = node.nodeValue ?? "";
     const trimmed = raw.trim();
     if (!trimmed) continue;
-    let original = reverse.get(trimmed) ?? trimmed;
-    if (!reverse.has(trimmed)) {
+    const normalized = trimmed.replace(/\s+/g, " ");
+    let original = reverse.get(normalized) ?? normalized;
+    if (!reverse.has(normalized)) {
       const translatedPhrases = [...reverse.entries()].sort((a, b) => b[0].length - a[0].length);
       for (const [translated, ro] of translatedPhrases) {
         if (translated.length >= 4 && original.includes(translated)) original = original.split(translated).join(ro);
