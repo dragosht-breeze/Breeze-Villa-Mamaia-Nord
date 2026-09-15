@@ -146,13 +146,25 @@ function replaceText(root: ParentNode, language: SiteLanguage) {
     const raw = node.nodeValue ?? "";
     const trimmed = raw.trim();
     if (!trimmed) continue;
-    const original = reverse.get(trimmed) ?? trimmed;
-    const next = dictionary?.[original] ?? original;
+    let original = reverse.get(trimmed) ?? trimmed;
+    if (!reverse.has(trimmed)) {
+      const translatedPhrases = [...reverse.entries()].sort((a, b) => b[0].length - a[0].length);
+      for (const [translated, ro] of translatedPhrases) {
+        if (translated.length >= 4 && original.includes(translated)) original = original.split(translated).join(ro);
+      }
+    }
+    let next = dictionary?.[original] ?? original;
+    if (dictionary && !dictionary[original]) {
+      const phrases = Object.entries(dictionary).sort((a, b) => b[0].length - a[0].length);
+      for (const [ro, translated] of phrases) {
+        if (ro.length >= 4 && next.includes(ro)) next = next.split(ro).join(translated);
+      }
+    }
     if (next !== trimmed) node.nodeValue = raw.replace(trimmed, next);
   }
 
-  for (const element of root.querySelectorAll<HTMLElement>("[aria-label], [placeholder], [title]")) {
-    for (const attribute of ["aria-label", "placeholder", "title"]) {
+  for (const element of root.querySelectorAll<HTMLElement>("[aria-label], [placeholder], [title], [alt]")) {
+    for (const attribute of ["aria-label", "placeholder", "title", "alt"]) {
       const value = element.getAttribute(attribute);
       if (!value) continue;
       const original = reverse.get(value) ?? value;
