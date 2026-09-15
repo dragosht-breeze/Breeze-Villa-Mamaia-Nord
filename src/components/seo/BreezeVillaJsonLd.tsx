@@ -13,6 +13,7 @@ const breezeVillaJsonLd = {
   ],
   description:
     "Breeze Villa Mamaia Nord oferă apartamente și studiouri spațioase pentru familii, piscină, terase, Wi-Fi și facilități pentru o vacanță relaxantă aproape de mare.",
+  inLanguage: "ro-RO",
   url: siteUrl,
   logo: `${siteUrl}/branding/breeze-villa-logo.png`,
   telephone: "+40723253405",
@@ -77,7 +78,7 @@ const breezeVillaJsonLd = {
     "@type": "ContactPoint",
     telephone: "+40723253405",
     contactType: "reservations",
-    availableLanguage: ["Romanian", "English"],
+    availableLanguage: ["Romanian", "English", "Russian"],
   },
 
   amenityFeature: [
@@ -160,7 +161,7 @@ const breezeVillaJsonLd = {
     },
   ],
 
-  knowsLanguage: ["ro", "en"],
+  knowsLanguage: ["ro", "en", "ru"],
 };
 
 export default function BreezeVillaJsonLd() {

@@ -117,10 +117,10 @@ export const metadata: Metadata = {
       "Descoperă Breeze Villa, cazare pentru familii în Mamaia Nord, cu apartamente spațioase, piscină, loc de joacă și parcare privată.",
     images: [
       {
-        url: "/branding/breeze-villa-logo.png",
-        width: 1024,
-        height: 1536,
-        alt: "Breeze Villa – cazare pentru familii în Mamaia Nord",
+        url: "/images/hero-breeze-night.png",
+        width: 1448,
+        height: 1086,
+        alt: "Breeze Villa Mamaia Nord – piscină și cazare pentru familii",
       },
     ],
   },
@@ -130,7 +130,7 @@ export const metadata: Metadata = {
     title: defaultTitle,
     description:
       "Apartamente pentru familii în Mamaia Nord, cu piscină, loc de joacă, parcare privată și rezervare directă.",
-    images: ["/branding/breeze-villa-logo.png"],
+    images: ["/images/hero-breeze-night.png"],
   },
 
   other: {
