@@ -11,6 +11,7 @@ import {
   Sparkles,
   Waves,
 } from "lucide-react";
+import LanguageSelector from "@/components/i18n/LanguageSelector";
 
 const heroStats = [
   {
@@ -80,6 +81,10 @@ export default function Hero() {
         aria-hidden="true"
         className="absolute -left-40 top-1/3 h-96 w-96 rounded-full bg-[#D9B56D]/10 blur-3xl"
       />
+
+      <div className="absolute right-4 top-4 z-20 sm:right-6 sm:top-6 lg:right-8 lg:top-8">
+        <LanguageSelector />
+      </div>
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col px-5 pb-10 pt-28 sm:px-6 sm:pb-12 sm:pt-32 lg:justify-center lg:px-8 lg:pb-36 lg:pt-36">
         <div className="flex flex-1 items-center lg:flex-none">

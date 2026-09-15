@@ -53,9 +53,7 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden flex-col items-end gap-1.5 md:flex">
-          <LanguageSelector />
-          <div className="flex items-center gap-2">
+        <div className="hidden items-center gap-2 lg:flex">
             <a
               href="https://wa.me/40723253405"
               target="_blank"
@@ -73,7 +71,6 @@ export default function Navbar() {
               <CalendarDays size={15} />
               Rezervă acum
             </Link>
-          </div>
         </div>
 
         <button
